@@ -42,7 +42,15 @@ Never pass `--bare` or `--no-package`, which drop the layout and the build backe
 Copier writes none of the files GitHub or `uv init` wrote.
 With `--trust`, its tasks append to `.gitignore`, run `uv add --raw --group dev` for the tools, and set the classifiers and `[project.urls]` in `pyproject.toml`; without it, Copier refuses to run, and `--skip-tasks` or the answer `apply: false` prints those steps to do by hand instead.
 Replace the `hello()` stub `uv init` wrote and write a first test, because the stub fails D103 and `fail_under = 100`, and pytest exits 5 with no test.
-Then `uv add` each runtime dependency.
+Then `uv add` each runtime dependency, and run the hooks:
+
+```sh
+uv sync
+uv run prek install
+uv run prek run --all-files
+```
+
+For `language: none`, `uvx prek install` and `uvx prek run --all-files`.
 `uvx copier update` later re-applies the template's files from its newest tag and merges the change onto the repo's own edits.
 
 ## Layout

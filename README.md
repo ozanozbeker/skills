@@ -36,4 +36,4 @@ A push does not reach the installed copy on its own:
   Safety, then performance, then developer experience, enforced by the repo's tools.
 - [github-style](skills/github-style/SKILL.md): everything that happens to a commit after `git push`.
   Pull requests, CI, Dependabot, release-please, PyPI and the docs site.
-- [setup-repo](skills/setup-repo/SKILL.md): `/setup-repo` walks a repo through both standards, asking only what decides the files and settings, and writes the files from the [templates](https://github.com/ozanozbeker/templates) Copier template.
+- [setup-repo](skills/setup-repo/SKILL.md): `/setup-repo` gets a repo from any state to both standards, asking only what decides the files and settings; the files come from the [templates](https://github.com/ozanozbeker/templates) Copier template.

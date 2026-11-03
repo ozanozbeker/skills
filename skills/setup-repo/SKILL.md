@@ -1,5 +1,5 @@
 ---
-description: Set up a repo to the python-style and github-style standards, asking the few questions that decide which files and settings it gets.
+description: Get a repo from any state to the python-style and github-style standard, asking the few questions that decide which files and settings it gets.
 disable-model-invocation: true
 name: setup-repo
 ---
@@ -84,41 +84,20 @@ Let the user edit the list before anything is written.
 
 ### 4. Write the files
 
-A repo with no GitHub remote is created there first, with the README, license and `.gitignore` GitHub offers:
+Three commands, in this order, from `python-style/setup.md`, which holds what each one writes and what to do after:
 
 ```sh
-gh repo create <owner>/<repo> --public --clone --add-readme --license mit --gitignore Python
-```
-
-Ask the visibility and the license before running it.
-Then, inside the clone, for a package or an application, `uv init` writes the project:
-
-```sh
-uv init --lib --python <floor>   # package
-uv init --app --python <floor>   # application
-```
-
-Then the template, with every answer on the command line so nothing is asked twice:
-
-```sh
+gh repo create <owner>/<repo> --public --clone --add-readme --license mit --gitignore Python   # skip when the repo is on GitHub already
+uv init --lib --python <floor>   # or --app; skip when pyproject.toml exists, and for `language: none`
 uvx copier copy --trust --data repo=<repo> --data owner=<owner> --data language=<python|none> --data package=<package> --data python_floor=<floor> --data pypi=<bool> --data docs=<bool> --data framework=<name> gh:ozanozbeker/templates .
 ```
 
-Copier writes none of the files GitHub or `uv init` wrote, and asks before overwriting any other file that exists.
-`--trust` lets its tasks append to `.gitignore`, run `uv add` for the tools, and set the classifiers and `[project.urls]`; say so in the plan, since the tasks run code from the template.
-Replace the `hello()` stub in `src/<package>/__init__.py` with a module docstring, and write `tests/test_<package>.py` with one test that imports the package.
-For a package, add the badges from `github-style/SKILL.md` under the README's title.
+Ask the visibility and the license before the first.
+Pass every answer as `--data` so nothing is asked twice, and say in the plan that `--trust` runs the template's tasks.
+A repo with `.copier-answers.yml` runs `uvx copier update --trust` instead of the third.
 Show `git status` and the diff of any overwritten file before going on.
-
-Then:
-
-```sh
-uv sync
-uv run prek install
-uv run prek run --all-files
-```
-
-For a repo with no Python, `uvx prek install` and `uvx prek run --all-files`.
+Then follow the rest of `setup.md`: the stub, the first test, `uv sync`, `uv run prek install` and `uv run prek run --all-files`.
+For a package, add the badges from `github-style/SKILL.md` under the README's title.
 Done when every hook passes.
 
 ### 5. Apply the settings
