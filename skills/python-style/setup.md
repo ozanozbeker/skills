@@ -1,6 +1,6 @@
 # Setting up a repo
 
-The config files that [`SKILL.md`](SKILL.md) assumes live in the `templates` repo, a [Copier](https://copier.readthedocs.io/) template: `ozanozbeker/templates` on GitHub and `~/templates` when cloned.
+The config files that [`SKILL.md`](SKILL.md) assumes live in the `templates` repo, a [Copier](https://copier.readthedocs.io/) template: `ozanozbeker/templates` on GitHub and `~/dev/templates` when cloned.
 Each comment inside a file records the reason for a setting, so the template is the reference and this page is the map.
 
 ## Answer the questions
@@ -34,7 +34,7 @@ gh repo create <owner>/<repo> --public --clone --add-readme --license mit --giti
 cd <repo>
 uv init --lib --python <floor>   # a library: src/ layout, py.typed, uv_build
 uv init --app --python <floor>   # an application: src/ layout, uv_build, and a [project.scripts] entry point
-uvx copier copy --trust gh:ozanozbeker/templates .   # or ~/templates while editing the template
+uvx copier copy --trust gh:ozanozbeker/templates .   # or ~/dev/templates while editing the template
 ```
 
 Both `uv init` forms give the `src/` layout (measured with uv 0.13.7), which keeps the tests importing the installed package and never the working tree.

@@ -1,6 +1,6 @@
 # Workflow files
 
-The workflows live in the `templates` repo, a [Copier](https://copier.readthedocs.io/) template: `ozanozbeker/templates` on GitHub and `~/templates` when cloned, under `shared/.github/` and `python/.github/`.
+The workflows live in the `templates` repo, a [Copier](https://copier.readthedocs.io/) template: `ozanozbeker/templates` on GitHub and `~/dev/templates` when cloned, under `shared/.github/` and `python/.github/`.
 Each comment inside a workflow records the reason for a step, so the template is the reference and this page is the map.
 Read a workflow there before changing it, and change it there first, so every repo gets the fix on its next `copier update`.
 

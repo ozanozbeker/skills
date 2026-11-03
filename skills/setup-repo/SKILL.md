@@ -28,7 +28,7 @@ Read the repo before asking anything:
 - `.github/workflows/`, `.github/dependabot.yml`, `release-please-config.json`: any of them?
 - Framework signals: `dagster` or `fastapi` in the dependencies, a `definitions.py`, a `defs/` directory, an `app.py` with a `FastAPI()` call.
 - `CLAUDE.md`, `CONTRIBUTING.md`, `docs/agents/`: present or not.
-- `~/templates/copier.yml`: is the template on this machine?
+- `~/dev/templates/copier.yml`: is the template on this machine?
 - `gh auth status`: logged in, and as whom?
 - For an existing GitHub repo, the current settings: `gh api repos/$R --jq '{allow_squash_merge, allow_auto_merge, delete_branch_on_merge, security_and_analysis}'` and `gh api repos/$R/rulesets --jq '.[].name'`.
 
@@ -53,9 +53,9 @@ One of three, and everything else follows from it:
   Recommend when there is no `pyproject.toml`.
 
 **Section B: Template source.**
-`gh:ozanozbeker/templates` at its newest tag, unless the user is editing the template, in which case `~/templates` so the edits render.
+`gh:ozanozbeker/templates` at its newest tag, unless the user is editing the template, in which case `~/dev/templates` so the edits render.
 Say that `.copier-answers.yml` records the source, and a later `copier update` resolves it again.
-Ask only when exploration found `~/templates/copier.yml`.
+Ask only when exploration found `~/dev/templates/copier.yml`.
 
 **Section C: Python floor.**
 Package or application only: `python_floor`.
