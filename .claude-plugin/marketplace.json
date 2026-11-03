@@ -1,0 +1,15 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ozanozbeker",
+  "description": "Ozan Ozbeker's agent skills.",
+  "owner": {
+    "name": "Ozan Ozbeker"
+  },
+  "plugins": [
+    {
+      "name": "ozanozbeker-skills",
+      "source": "./",
+      "description": "Ozan Ozbeker's agent skills."
+    }
+  ]
+}

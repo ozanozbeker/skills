@@ -1,0 +1,9 @@
+{
+  "name": "ozanozbeker-skills",
+  "version": "0.1.0",
+  "description": "Ozan Ozbeker's agent skills.",
+  "author": { "name": "Ozan Ozbeker" },
+  "repository": "https://github.com/ozanozbeker/skills",
+  "license": "MIT",
+  "skills": ["./skills/python-style", "./skills/github-style", "./skills/setup-repo"]
+}

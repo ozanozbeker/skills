@@ -1,0 +1,17 @@
+[global]
+enable = ["ALL"]
+disable = [
+  "MD024",  # Multiple headings with the same content
+  "MD063",  # Heading text capitalization style
+  "MD082",  # No content before the next heading
+]
+respect-gitignore = true
+
+[MD013]
+line-length = 0
+code-blocks = false
+reflow = true
+reflow-mode = "sentence-per-line"
+
+[MD093]
+code = false

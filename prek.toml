@@ -1,0 +1,64 @@
+default_install_hook_types = ["pre-commit", "commit-msg"]
+default_stages = ["pre-commit"]
+
+# --- Conventional Commits ---
+[[repos]]
+repo = "https://github.com/compilerla/conventional-pre-commit"
+rev = "91ab4bf57e58b32adf1a122681f6ebe164d081c8"  # frozen: v4.4.0
+hooks = [
+  {
+    id = "conventional-pre-commit",
+    stages = ["commit-msg"],
+    # Listing types replaces the hook's defaults, so the list repeats them.
+    args = [
+      "--strict",
+      "build",
+      "chore",
+      "ci",
+      "docs",
+      "feat",
+      "fix",
+      "perf",
+      "refactor",
+      "revert",
+      "style",
+      "test",
+    ]
+  }
+]
+
+# --- Gitleaks ---
+[[repos]]
+repo = "https://github.com/gitleaks/gitleaks"
+rev = "83d9cd684c87d95d656c1458ef04895a7f1cbd8e"  # frozen: v8.30.1
+hooks = [{ id = "gitleaks" }]
+
+# --- Built-in ---
+# prek ships these hooks itself, so they need no clone and no pin.
+[[repos]]
+repo = "builtin"
+hooks = [
+  { id = "trailing-whitespace" },
+  { id = "end-of-file-fixer" },
+  # Without the flag, the hook checks only while a merge is in progress.
+  { id = "check-merge-conflict", args = ["--assume-in-merge"] },
+  { id = "check-json" },
+  { id = "check-case-conflict" },
+  { id = "check-added-large-files" },
+  { id = "detect-private-key" },
+]
+
+# --- rumdl ---
+[[repos]]
+repo = "https://github.com/rvben/rumdl-pre-commit"
+rev = "b0cff962ee693b9e612c097d22e71e0cba127447"  # frozen: v0.3.2
+hooks = [{ id = "rumdl-check", args = ["--fix"] }]
+
+# --- tombi ---
+[[repos]]
+repo = "https://github.com/tombi-toml/tombi-pre-commit"
+rev = "67d13bcf8d97660524276ba6716c22211aa59f3b"  # frozen: v1.9.9
+hooks = [
+  { id = "tombi-lint" },
+  { id = "tombi-format" },
+]
