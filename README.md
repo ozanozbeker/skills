@@ -26,9 +26,8 @@ npx skills add ozanozbeker/skills
 
 ## Update
 
-### Claude Code plugin
-
-A push does not reach the installed copy on its own:
+A push does not reach an installed copy on its own.
+In Claude Code:
 
 ```text
 /plugin marketplace update ozanozbeker
@@ -36,7 +35,7 @@ A push does not reach the installed copy on its own:
 /reload-plugins
 ```
 
-### npx skills
+With `npx skills`:
 
 ```bash
 npx skills update
@@ -66,6 +65,8 @@ My skills above work well combined with them.
 - [mattpocock/skills](https://github.com/mattpocock/skills): engineering workflow skills.
   `writing-for-agents` owns any `CLAUDE.md`, `AGENTS.md` or skill; `tdd`, `diagnosing-bugs`, `grilling`, `code-review` and `domain-modeling` cover the rest.
 - [github/awesome-copilot](https://github.com/github/awesome-copilot): `github-actions-hardening` and `github-actions-efficiency`.
+- [vercel-labs/skills](https://github.com/vercel-labs/skills): `find-skills`, which searches for a skill that fits a task.
+- [tt-a1i/archify](https://github.com/tt-a1i/archify): architecture, flow, sequence and ER diagrams as standalone HTML pages.
 
 ### Data
 
@@ -73,7 +74,14 @@ My skills above work well combined with them.
   `dbt-style` covers only how the code looks.
 - [polars-inc/skills](https://github.com/polars-inc/skills): idiomatic lazy Polars, the streaming engine and pandas migration.
 - [quantco/dataframely](https://github.com/quantco/dataframely): schemas and validation for Polars data frames.
+- [duckdb/duckdb-skills](https://github.com/duckdb/duckdb-skills): querying, reading and converting data files with DuckDB, including files on S3 and spatial data.
 - [dagster-io/skills](https://github.com/dagster-io/skills): the `dg` CLI, assets, components and pipeline debugging.
+
+### Notebooks and apps
+
+- [marimo-team/skills](https://github.com/marimo-team/skills): writing marimo notebooks, converting Jupyter and Streamlit to marimo, and checking WebAssembly compatibility.
+- [marimo-team/marimo-pair](https://github.com/marimo-team/marimo-pair): working in a live marimo notebook beside the user.
+- [posit-dev/skills](https://github.com/posit-dev/skills): Quarto authoring, `brand.yml` and Shiny apps.
 
 ### Python tooling and docs
 
