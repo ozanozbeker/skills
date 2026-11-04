@@ -36,6 +36,8 @@ A push does not reach the installed copy on its own:
   Docstrings, comments, docs, commit messages, pull request bodies and chat; a document an agent reads is `writing-for-agents`'s.
 - [python-style](skills/python-style/SKILL.md): Python style, from TigerStyle.
   Safety, then performance, then developer experience, enforced by the repo's tools.
+- [dbt-style](skills/dbt-style/SKILL.md): dbt style, from the dbt Labs best-practice guides.
+  Layers, naming, SQL, Jinja, YAML and materializations, with reference pages for incremental and near-real-time models, CI workflows, custom generic tests and Mesh planning; the official `dbt` plugin's skills own the workflow.
 - [github-style](skills/github-style/SKILL.md): everything that happens to a commit after `git push`.
   Pull requests, CI, Dependabot, release-please, PyPI and the docs site.
 - [setup-repo](skills/setup-repo/SKILL.md): `/setup-repo` gets a repo from any state to both standards, asking only what decides the files and settings; the files come from the [templates](https://github.com/ozanozbeker/templates) Copier template.
