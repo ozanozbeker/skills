@@ -43,12 +43,10 @@ Source: the [Kimball techniques](https://www.kimballgroup.com/data-warehouse-bus
 ## Load metadata on a fact row
 
 - An audit dimension is keyed from every fact row and carries the run's data-quality indicators, code version and run timestamp, so a query drills to the rows a given run produced.
-- In dbt, `invocation_id` and `run_started_at` identify the run.
 
 ## Real-time fact table
 
 - A hot partition pinned in memory without aggregates or indexes, or deferred updates that let running queries finish first.
-- The near-real-time patterns for dbt (microbatch, streams, dynamic tables, lambda views) are in the `incremental.md` file of `dbt-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/dbt-style)), when it is installed.
 
 ## Data-quality schema
 

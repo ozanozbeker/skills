@@ -47,7 +47,7 @@ These rules are the default for a new project and for a choice the project has n
 
 [How we structure our dbt projects](https://docs.getdbt.com/best-practices/how-we-structure/1-guide-overview).
 Data moves from source-conformed (shaped by systems outside our control) to business-conformed (shaped by the business's definitions).
-Each layer is one step along that arc, and the DAG narrows as it goes: many narrow staging models join into fewer, wider marts.
+Each layer is one step along that arc, and the DAG narrows as it goes: many narrow staging models join into fewer marts.
 
 Development runs the other way from the DAG: mock the output in a spreadsheet with the stakeholder first, then build back from the mart to the staging models it needs.
 
@@ -89,19 +89,22 @@ Development runs the other way from the DAG: mock the output in a spreadsheet wi
 
 [Marts](https://docs.getdbt.com/best-practices/how-we-structure/4-marts).
 
-- One mart per business entity at its own grain, named in plain English and plural: `customers`, `orders`.
-  The structure guide uses no prefix.
-  A project that uses `fct_` and `dim_` keeps them: the prefix tells end users which relations to query.
-- A dimensional mart (a fact table and its dimensions) takes its grain, keys and history from `kimball-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/kimball-style)) when it is installed, and from the rules below otherwise.
+- Marts are a star schema: fact tables and dimension tables, each at its declared grain, designed under `kimball-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/kimball-style)) when it is installed.
+  This departs from the structure guide, which builds one wide, denormalized mart per entity, because a star keeps one definition of each dimension that every fact table shares.
+- Name a fact table `fct_<process>` and a dimension `dim_<entity>`, so the prefix tells end users which relations to query.
 - One definition per concept.
   `finance_orders` beside `marketing_orders` is two truths; build it once and let teams filter.
   A legitimate second definition (revenue reported to a regulator) gets a name that says so.
-- Without the Semantic Layer, make marts wide and denormalized, because storage is cheap and compute is not.
-  With the Semantic Layer, keep marts normalized so MetricFlow can join them, and follow `building-dbt-semantic-layer` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)) when it is installed.
+- A consumer that cannot join reads a wide view built over the star, so the wide shape adds no second definition.
+  With the Semantic Layer, MetricFlow joins the star itself; follow `building-dbt-semantic-layer` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)) when it is installed.
 - Materialize as a table, or incremental once the table takes too long to build.
   Set `table` on the folder in `dbt_project.yml` and `incremental` in the model's own config.
-- Keep the time grain out of the mart (`orders_per_day`); a rollup belongs in a metric.
-- A mart may ref another mart at a different grain (`orders` into `customers`), and the DAG may widen here.
+- Keep the time grain out of the atomic fact table (`orders_per_day`); a rollup belongs in a metric, or in an aggregate fact table built from the atomic one.
+- A dimension may ref a fact table to carry an aggregate as an attribute (lifetime value on `dim_customers`), and the DAG may widen here.
+- A dbt snapshot holds a Type 2 dimension's history: `dbt_valid_from` and `dbt_valid_to` are the row's effective and expiration dates, and `dbt_valid_to` is null on the current row.
+  A fact table joins the dimension on the natural key and on its event time between the two dates, with a null `dbt_valid_to` read as open, so each row takes the surrogate key in effect at the event.
+- A surrogate key is `dbt_utils.generate_surrogate_key` over the natural key, plus `dbt_valid_from` for a Type 2 dimension, because a rebuilt table would reassign a sequence's values on every run and a hash of the same inputs never changes.
+- An audit dimension identifies the run with `invocation_id` and `run_started_at`.
 - Eight simple joins in one mart can be fine; four concepts each needing a heavy window function is the signal to add an intermediate model.
 - While debugging, materialize the upstream views as tables for the session, because an error that surfaces in a mart often starts several models up and a table lets you query the step.
 
@@ -159,6 +162,7 @@ Add these four dbt Labs packages to `packages.yml`, each pinned to an exact vers
 - Plural model names.
 - Every model has a primary key named `<object>_id`, typed as a string.
   The same key keeps the same name everywhere: `customer_id` in every model.
+- A dimension's surrogate key is `<object>_key`, and its natural key keeps `<object>_id`, so a reader tells the warehouse's key from the source's.
 - Business terms over source terms: the source's `user_id` becomes `customer_id` when the business says customer.
 - Full words: `customer`, not `cust`; `orders`, not `o`.
 - Booleans start with `is_` or `has_`.

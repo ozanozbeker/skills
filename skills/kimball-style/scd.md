@@ -6,10 +6,9 @@ Source: the [Kimball techniques](https://www.kimballgroup.com/data-warehouse-bus
 ## Type 2
 
 - Three columns at minimum: a row effective date, a row expiration date and a current row indicator, as timestamps when a member can change twice in a day.
-- The current row's expiration is null (what a dbt snapshot writes to `dbt_valid_to`) or a far-future date; the project picks one and keeps it, because a `between` on the two reads differently.
+- The current row's expiration is null or a far-future date; the project picks one and keeps it, because a `between` on the two reads differently.
 - A change inserts a row with a new surrogate key and the same durable key, and expires the previous row at the change time.
 - A fact posted after the change carries the new key; a fact for an event before the change carries the key effective then (late arriving rows, below).
-- In dbt, the snapshot section of the `incremental.md` file of `dbt-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/dbt-style)) holds the strategy choice and the tests for the rows, when that skill is installed.
 
 ## Type 3
 
