@@ -9,7 +9,9 @@ The [Kimball dimensional modeling techniques](https://www.kimballgroup.com/data-
 The text is all rights reserved, so the rules here restate it instead of quoting it.
 Each rule carries its reason in one sentence; the [PDF](https://www.kimballgroup.com/wp-content/uploads/2013/08/2013.09-Kimball-Dimensional-Modeling-Techniques11.pdf) holds every technique in full, for when a rule needs defending or a case is not covered here.
 This skill decides the model: the grain, the keys, the fact and dimension tables, and how they change over time.
-`dbt-style` decides what the code looks like, and `dbt:building-dbt-semantic-layer` owns the metrics on top of the marts, so a dbt mart loads this skill and `dbt-style` together.
+The model holds in any warehouse and any tool.
+In a dbt project with `dbt-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/dbt-style)) installed, it decides what the code looks like, and a mart loads both skills together.
+When `building-dbt-semantic-layer` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)) is installed, it owns the metrics on top of the marts.
 
 | Reference | Load when |
 | --- | --- |
@@ -45,9 +47,10 @@ This skill decides the model: the grain, the keys, the fact and dimension tables
 6. **Identify the facts.**
    A fact is a numeric measurement the event produces: the quantity and the extended price of a sale, and never the store manager's salary.
    Done means every fact fits one row of the grain and carries its additivity label.
-7. **Write the design down, then hand it to `dbt-style`.**
+7. **Write the design down.**
    The design is the grain sentence, the table and column names, sample domain values per attribute, each attribute's slowly changing dimension type, each fact's additivity, and the business rule behind every derived column.
    Add the fact table as a row of the project's bus matrix, or start one from [`bus-matrix.md`](bus-matrix.md).
+   In a dbt project, `dbt-style` writes the code from this design.
    Done means every rule below is applied, or the departure is written beside the table with its reason.
 
 ## Fact tables
@@ -89,7 +92,7 @@ Its design follows the physical event, not the report someone wants from it.
 A dimension table has one single-column primary key and is wide, flat and verbose: many low-cardinality text attributes, because the attributes are what queries filter and group by and what report labels show.
 
 - The primary key is a surrogate: an anonymous integer assigned in sequence from 1, owned by the warehouse, because the natural key repeats across Type 2 rows and is administered by source systems outside your control.
-  When the load path has no sequence, `dbt_utils.generate_surrogate_key` over the natural key and the effective date is the `dbt-style` substitute, at the cost of a wider key.
+  When the load path has no sequence, a hash of the natural key and the effective date is the substitute, at the cost of a wider key; `dbt_utils.generate_surrogate_key` is that hash in dbt.
 - Keep the natural key as an attribute, and add a durable key (a sequential integer that never changes) when the natural key can change, as an employee number does on rehire, so one entity keeps one durable key across many surrogate keys.
 - Name the surrogate key for the dimension, `customer_key`, identical in the dimension and in every fact table, and keep the natural key as `customer_id`, so a reader tells the warehouse's key from the source's.
 - Denormalize every fixed-depth many-to-one hierarchy into attributes on one row.
@@ -152,4 +155,5 @@ Four changes break no existing query and change no existing result:
 - A more atomic grain is new attributes on a dimension and the fact table restated at the lower grain, with every existing column name kept.
 
 Shape a change as one of these four.
-A change outside them (a coarser grain, a renamed column, a redefined fact) breaks consumers, and `dbt-style`'s `mesh.md` holds the versioning and retirement rules.
+A change outside them (a coarser grain, a renamed column, a redefined fact) breaks consumers: version the table, and retire the old version on a schedule the consumers agree to.
+In dbt, `dbt-style`'s `mesh.md` holds the rules.

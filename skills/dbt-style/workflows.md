@@ -1,7 +1,7 @@
 # Workflows, CI and deployment
 
 Sources: [best practices for workflows](https://docs.getdbt.com/best-practices/best-practice-workflows), [clone incremental models in CI](https://docs.getdbt.com/best-practices/clone-incremental-models), [optimize static analysis](https://docs.getdbt.com/best-practices/optimize-static-analysis-for-development-and-deployment), [examining builds](https://docs.getdbt.com/best-practices/materializations/6-examining-builds), [Unity Catalog](https://docs.getdbt.com/best-practices/dbt-unity-catalog-best-practices) and the [style conclusion](https://docs.getdbt.com/best-practices/how-we-style/6-how-we-style-conclusion).
-`dbt:running-dbt-commands` owns the command syntax; this file holds the patterns.
+When `running-dbt-commands` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)) is installed, it owns the command syntax; this file holds the patterns.
 
 ## Development
 

@@ -1,7 +1,7 @@
 # Custom generic tests
 
 Source: [writing custom generic data tests](https://docs.getdbt.com/best-practices/writing-custom-generic-tests).
-`dbt:using-dbt-for-analytics-engineering` decides which tests a model gets; `dbt:adding-dbt-unit-test` owns unit tests.
+When the [dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills) skills are installed, `using-dbt-for-analytics-engineering` decides which tests a model gets, and `adding-dbt-unit-test` owns unit tests.
 This file is the mechanics of a generic test.
 
 - Check `dbt_utils` and `dbt_expectations` first, because the test usually exists.

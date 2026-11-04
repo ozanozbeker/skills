@@ -9,8 +9,8 @@ name: dbt-style
 The conventions from the [dbt Labs best-practice guides](https://docs.getdbt.com/best-practices), Apache-2.0, read on 2026-11-03.
 Each rule carries its reason in one sentence; the page linked under each heading holds the long argument.
 This skill decides what the code looks like.
-`dbt:using-dbt-for-analytics-engineering` decides how the work is done: data discovery, `dbt show` validation, impact analysis.
-Load both for model work.
+When `using-dbt-for-analytics-engineering` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)) is installed, it decides how the work is done: data discovery, `dbt show` validation, impact analysis.
+Load both for model work; without it, the steps below stand alone.
 
 dbt Labs calls its own guides a starting point and puts consistency above every specific rule.
 So the project wins: a `.sqlfluff`, a written style guide, or a pattern the existing models share overrides the rule here.
@@ -21,7 +21,7 @@ These rules are the default for a new project and for a choice the project has n
 | [`incremental.md`](incremental.md) | Writing an incremental model or a snapshot, choosing between them, or building near-real-time models (microbatch, streams, dynamic tables, lambda views) |
 | [`workflows.md`](workflows.md) | Setting up a CI job, a slim CI selector, a rerun, grants, static analysis, or Databricks Unity Catalog, or reading a build's timings |
 | [`tests.md`](tests.md) | Writing a custom generic test or overriding a built-in one |
-| [`mesh.md`](mesh.md) | Deciding whether and where to split a project, grouping a monolith, or retiring a model version; `dbt:working-with-dbt-mesh` holds the mechanics |
+| [`mesh.md`](mesh.md) | Deciding whether and where to split a project, grouping a monolith, or retiring a model version; `working-with-dbt-mesh` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)), when installed, holds the mechanics |
 
 ## Steps
 
@@ -85,11 +85,12 @@ Development runs the other way from the DAG: mock the output in a spreadsheet wi
 - One mart per business entity at its own grain, named in plain English and plural: `customers`, `orders`.
   The structure guide uses no prefix.
   A project that uses `fct_` and `dim_` keeps them: the prefix tells end users which relations to query.
+- A dimensional mart (a fact table and its dimensions) takes its grain, keys and history from `kimball-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/kimball-style)) when it is installed, and from the rules below otherwise.
 - One definition per concept.
   `finance_orders` beside `marketing_orders` is two truths; build it once and let teams filter.
   A legitimate second definition (revenue reported to a regulator) gets a name that says so.
 - Without the Semantic Layer, make marts wide and denormalized, because storage is cheap and compute is not.
-  With the Semantic Layer, keep marts normalized so MetricFlow can join them, and follow `dbt:building-dbt-semantic-layer`.
+  With the Semantic Layer, keep marts normalized so MetricFlow can join them, and follow `building-dbt-semantic-layer` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)) when it is installed.
 - Materialize as a table, or incremental once the table takes too long to build.
   Set `table` on the folder in `dbt_project.yml` and `incremental` in the model's own config.
 - Keep the time grain out of the mart (`orders_per_day`); a rollup belongs in a metric.
@@ -133,7 +134,7 @@ Development runs the other way from the DAG: mock the output in a spreadsheet wi
   Dates are `<event>_date`.
   Event names are past tense: `created`, `updated`, `deleted`.
 - Money is decimal currency (`19.99`); a column in minor units says so (`price_in_cents`).
-- Model versions take a `_v1`, `_v2` suffix; `dbt:working-with-dbt-mesh` owns when to version.
+- Model versions take a `_v1`, `_v2` suffix; when installed, `working-with-dbt-mesh` decides when to version.
 - Columns go in type order, with a comment heading each group: ids, strings, numerics, booleans, dates, timestamps.
 
 ## SQL
@@ -213,8 +214,8 @@ select * from renamed
 
 ## Python models
 
-A dbt Python model follows `ozanozbeker-skills:python-style`.
-The dbt guide names black and ruff; python-style's ruff setup covers both.
+A dbt Python model follows `python-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/python-style)) when it is installed, and the project's own linter otherwise.
+The dbt guide names black and ruff; `python-style`'s ruff setup covers both.
 Confirm the adapter runs Python before writing one, and materialize it as a table or incremental, because a Python model cannot be a view.
 
 ## Materializations

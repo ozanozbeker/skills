@@ -1,7 +1,7 @@
 # Mesh planning
 
 Source: [how we build our dbt Mesh](https://docs.getdbt.com/best-practices/how-we-mesh/mesh-1-intro), pages 2 to 6.
-`dbt:working-with-dbt-mesh` owns the mechanics (groups, access, contracts, versions, cross-project `ref`).
+When `working-with-dbt-mesh` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)) is installed, it owns the mechanics (groups, access, contracts, versions, cross-project `ref`); otherwise the dbt docs do.
 This file is the decisions before and after.
 
 ## Whether to split
