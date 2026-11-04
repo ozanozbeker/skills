@@ -32,6 +32,8 @@ A push does not reach the installed copy on its own:
 
 ## Skills
 
+- [writing-style](skills/writing-style/SKILL.md): prose a person reads, under ISO 24495-1 plain language, with the tidyverse reference pages as the model for a docs page.
+  Docstrings, comments, docs, commit messages, pull request bodies and chat; a document an agent reads is `writing-for-agents`'s.
 - [python-style](skills/python-style/SKILL.md): Python style, from TigerStyle.
   Safety, then performance, then developer experience, enforced by the repo's tools.
 - [github-style](skills/github-style/SKILL.md): everything that happens to a commit after `git push`.

@@ -34,7 +34,8 @@ Read it when a rule needs defending or when a case is not covered here.
 ### Control flow
 
 - Iterate; never recurse.
-  Python has no tail-call elimination, and the default recursion limit is 1000 frames, so recursion over user-sized input raises `RecursionError` in production.
+  Recursion lets the input set the stack depth, so the bound is out of the code's hands.
+  Python has no tail-call elimination and a default limit of 1000 frames, so user-sized input raises `RecursionError` in production.
   Use an explicit stack or `collections.deque`.
 - Bound every loop.
   Iterate `for` over a finite iterable.
@@ -61,7 +62,8 @@ Python has three places for that density, and `assert` in `src/` is none of them
 - **Types are the compile-time assertions.**
   Annotate every parameter and return.
   The type checker proves the relationship before the code runs, which is what `comptime { assert(...) }` does in Zig.
-  Use `Literal` for a set of allowed strings, `Final` for a constant, `typing.assert_never` in the `else` of a `match` so a new variant fails the checker, and `typing.assert_type` in a test when a return type must stay exactly what it is.
+  Use `Literal` for a set of allowed strings, not a `StrEnum`: the language servers complete `Literal` values inside the quotes, and a `StrEnum` fails a `Literal` field in pyrefly and pyright (measured 2026-09-28).
+  Use `Final` for a constant, `typing.assert_never` in the `else` of a `match` so a new variant fails the checker, and `typing.assert_type` in a test when a return type must stay exactly what it is.
 - **A `raise` is the runtime assertion in `src/`.**
   Check a precondition at the top of a public function and raise `ValueError` or `TypeError` with the offending value in the message.
   Postconditions and invariants raise too.
@@ -163,6 +165,9 @@ A parser, an HTTP client, a CLI framework and a database driver each earn this: 
 
 A small standardized toolbox.
 Each tool gives a deterministic answer, so run the tool instead of reading the code for the same answer, and treat its output as a fact.
+Zero warnings from day one, at the strictest setting.
+When a tool complains and you believe it is wrong, rewrite the code so the tool agrees, because a warning assumed invalid is usually valid for a reason not yet seen.
+An ignore comment carries the reason beside it and is the exception, never the fix.
 
 | Job | Tool |
 | --- | --- |
@@ -177,10 +182,6 @@ Each tool gives a deterministic answer, so run the tool instead of reading the c
 [`setup.md`](setup.md) maps the config files a new repo starts from, by kind of repo, to the Copier answers in the `templates` repo that holds them with the reason for each setting.
 Read it when setting up a repo or when a repo's config departs from the table above.
 What happens after `git push` (the pull request, CI, the release) is the `github-style` skill's.
-
-Zero warnings from day one, at the strictest setting.
-When a tool complains and you believe it is wrong, rewrite the code so the tool agrees, because a warning assumed invalid is usually valid for a reason not yet seen.
-An ignore comment carries the reason beside it and is the exception, never the fix.
 
 Write `scripts/*.py`, not `scripts/*.sh`.
 A Python script with PEP 723 inline metadata runs under `uv run` on every platform, is typed and linted, and fails the same way for everyone on the team.
@@ -207,14 +208,10 @@ A Python script with PEP 723 inline metadata runs under `uv run` on every platfo
   In a class, fields, then nested types, then methods.
   When no order is better than another, sort alphabetically.
 
-### Comments and commits
+### Comments and docstrings
 
-- Say why.
-  Code is not documentation of its own rationale.
-  A comment is one line, records a reason the code does not show, and is a sentence with a capital and a full stop.
-- Say how, at the top of a test: the goal and the method, so a reader can skip the body.
-- A commit message is read, and `git blame` shows it where a pull request description never appears.
-  Write the message for that reader.
+Every sentence a person reads, in a comment, a docstring, a commit message or a pull request, follows `writing-style`.
+A docstring follows numpydoc, and [`docstrings.md`](docstrings.md) holds what the `D` rules and numpydoc's validation cannot check.
 
 ### Off-by-one
 

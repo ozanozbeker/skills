@@ -78,10 +78,15 @@ This list is what to check when a repo's config departs from them.
   `zizmor`, `actionlint` and the `gitleaks-ci` alias guard the workflows, which `github-style` owns; they stay in this file because one `prek.toml` runs everything.
 - `ruff.toml`: `select = ["ALL"]`, numpy docstrings, `docstring-code-format`, and an `ignore` list where each entry carries why.
   Tests ignore `S101` and the docstring rules.
+- `[tool.numpydoc_validation]` in `pyproject.toml`: `all`, with the checks that are off and why beside each, and the `numpydoc lint` hook over `src/`.
+  `exclude` skips `__init__` and private names; a repo whose private modules hold public names narrows it to those names and asserts in a test that every name in `__all__` appears there.
 - `ty.toml`: `error-on-warning` and ty's stricter rule set, with `unused-ignore-comment = "error"`.
 - `pytest.ini`: `filterwarnings = error`, `--strict-config --strict-markers --import-mode=importlib`, `xfail_strict`.
   `.coveragerc`: `fail_under = 100`.
   `pyproject.toml`: a `dev` group of bare tool names, which `uv add --group dev` writes.
+  No floor and no cap: dev tools never reach users, and the lock pins the version that runs.
+  Runtime floors keep their own rule, the oldest version the `lowest` job passes.
+  Upgrade a tool in a `chore:` commit with `uv lock --upgrade-package <name>`.
 - `rumdl.toml`: `line-length = 0` with one sentence per line, so a diff shows the sentence that changed.
 - `tombi.toml`: `toml-version = "v1.1.0"`, because `prek.toml` uses multi-line inline tables.
 
