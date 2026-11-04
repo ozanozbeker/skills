@@ -5,5 +5,5 @@
   "author": { "name": "Ozan Ozbeker" },
   "repository": "https://github.com/ozanozbeker/skills",
   "license": "MIT",
-  "skills": ["./skills/writing-style", "./skills/python-style", "./skills/dbt-style", "./skills/kimball-style", "./skills/github-style", "./skills/setup-repo"]
+  "skills": ["./skills/writing-style", "./skills/python-style", "./skills/dbt-style", "./skills/kimball-style", "./skills/github-style"]
 }

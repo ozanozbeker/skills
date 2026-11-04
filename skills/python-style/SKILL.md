@@ -1,5 +1,5 @@
 ---
-description: Python style, from TigerStyle. Safety, then performance, then developer experience, enforced by the repo's tools. Use when writing, reviewing or designing Python code, choosing a dependency, deciding how to check an invariant, or setting up a new repo's tooling.
+description: Python style, from TigerStyle. Safety, then performance, then developer experience, enforced by the repo's tools. Use when writing, reviewing or designing Python code, choosing a dependency, deciding how to check an invariant, or setting up a repo or bringing its tooling to the standard.
 license: Apache-2.0
 name: python-style
 ---
@@ -18,12 +18,18 @@ Read it when a rule needs defending or when a case is not covered here.
 
 ## Steps
 
-1. **Sketch before writing.**
+1. **Check the repo against the final state.**
+   The final state is the tooling table below plus the files in [`setup.md`](setup.md).
+   Look for `pyproject.toml`, `prek.toml` and `.copier-answers.yml`, and read `setup.md` when any is missing or a config file departs from it.
+   A bare repo gets the offer of the template; an existing repo gets one proposed change per departure.
+   A departure never blocks the task at hand: name it, propose the change, and carry on.
+   Done means you can say whether the repo is bare, from the template, or set up its own way, and list the departures still open.
+2. **Sketch before writing.**
    Name every limit (a loop bound, a batch size, a timeout, a queue depth) and every resource the code touches (network, disk, memory, CPU).
    Name the rung of the dependency ladder each piece sits on.
    Write the sketch down when it is more than a few lines, because the design phase is where a 1000x win is still available and where profiling cannot yet help.
-2. **Write the code under the rules below.**
-3. **Run the tools, and make them pass.**
+3. **Write the code under the rules below.**
+4. **Run the tools, and make them pass.**
    The repo's config is the source of truth: run every hook `prek.toml` lists, then `uv run pytest`.
    Zero warnings, zero ignores added.
    A tool output is a fact, so trust it over your own reading of the code.
@@ -179,7 +185,7 @@ An ignore comment carries the reason beside it and is the exception, never the f
 | TOML | `tombi` |
 | Hooks | `prek`, with every `rev` a frozen SHA |
 
-[`setup.md`](setup.md) maps the config files a new repo starts from, by kind of repo, to the Copier answers in the `templates` repo that holds them with the reason for each setting.
+[`setup.md`](setup.md) holds the files of the final state and how to reach it: the template for a bare repo, one change at a time for an existing one.
 Read it when setting up a repo or when a repo's config departs from the table above.
 What happens after `git push` (the pull request, CI, the release) is owned by `github-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/github-style)) when it is installed.
 

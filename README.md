@@ -47,13 +47,13 @@ npx skills update
   Docstrings, comments, docs, commit messages, pull request bodies and chat; a document an agent reads is `writing-for-agents`'s.
 - [python-style](skills/python-style/SKILL.md): Python style, from TigerStyle.
   Safety, then performance, then developer experience, enforced by the repo's tools.
+  It offers the [templates](https://github.com/ozanozbeker/templates) Copier template for a bare repo, and moves an existing repo to the same final state one change at a time.
 - [dbt-style](skills/dbt-style/SKILL.md): dbt style, from the dbt Labs best-practice guides.
   Layers, naming, SQL, Jinja, YAML and materializations, with reference pages for incremental and near-real-time models, CI workflows, custom generic tests and Mesh planning; the official `dbt` plugin's skills own the workflow.
 - [kimball-style](skills/kimball-style/SKILL.md): dimensional modeling, from the Kimball Group's official techniques.
   Business process, grain, fact and dimension tables, keys and slowly changing dimensions, with reference pages for the hybrid SCD types and late rows, ragged hierarchies and bridge tables, the bus matrix and special-purpose patterns; `dbt-style` owns the code.
 - [github-style](skills/github-style/SKILL.md): everything that happens to a commit after `git push`.
   Pull requests, CI, Dependabot, release-please, PyPI and the docs site.
-- [setup-repo](skills/setup-repo/SKILL.md): `/setup-repo` gets a repo from any state to both standards, asking only what decides the files and settings; the files come from the [templates](https://github.com/ozanozbeker/templates) Copier template.
 
 ## External skills
 

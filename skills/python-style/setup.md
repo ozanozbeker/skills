@@ -1,9 +1,10 @@
 # Setting up a repo
 
-The config files that [`SKILL.md`](SKILL.md) assumes live in the `templates` repo, a [Copier](https://copier.readthedocs.io/) template: `ozanozbeker/templates` on GitHub.
+The final state is the tooling table in [`SKILL.md`](SKILL.md) plus the files this page lists.
+They live in the `templates` repo, a [Copier](https://copier.readthedocs.io/) template: `ozanozbeker/templates` on GitHub.
 Each comment inside a file records the reason for a setting, so the template is the reference and this page is the map.
 
-## Answer the questions
+## The template
 
 Copier asks these, and the answers decide which files exist and what they hold:
 
@@ -17,39 +18,66 @@ Copier asks these, and the answers decide which files exist and what they hold:
 
 | Answer | Files |
 | --- | --- |
-| every repo | `prek.toml` (Conventional Commits, gitleaks, zizmor, actionlint, typos, the built-in hooks, rumdl, tombi), `rumdl.toml`, `tombi.toml`, `SECURITY.md`, and the workflows that `github-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/github-style)) describes |
-| every repo, Python tools | `prek.toml` adds `default_language_version` and the local `ruff`, `uv lock --check` and `ty` hooks; `ruff.toml`, `ty.toml`, `pytest.ini`, `.coveragerc`, `typos.toml`; `rumdl.toml` gains the quarto flavor |
+| every repo | `prek.toml` (Conventional Commits, gitleaks, zizmor, actionlint, typos, the built-in hooks, rumdl, tombi, and the local `ruff`, `uv lock --check` and `ty` hooks), `ruff.toml`, `ty.toml`, `pytest.ini`, `.coveragerc`, `typos.toml`, `rumdl.toml` with the quarto flavor, `tombi.toml`, `SECURITY.md`, and the workflows that `github-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/github-style)) describes |
 | `pypi` | release-please and the release workflows; `rumdl.toml` excludes `CHANGELOG.md` |
 | `docs` | The `docs` job in CI and the `site` and `pages` jobs after a release; the tasks add the `docs` group and the Documentation link |
 | `framework: dagster` | `ruff.toml` ignores on `definitions.py` and the asset modules, runtime-evaluated decorators; `pytest.ini` sets `pythonpath = .`; the tasks add `dagster-dg-cli` and `dagster-webserver` to `dev` |
 | `framework: fastapi` | `ruff.toml` ignores `B008` and names `pydantic.BaseModel` as runtime-evaluated; `pytest.ini` adds the `anyio` marker; the tasks add `httpx` to `dev` |
 
-## Create the project
+## Start a bare repo from the template
 
-GitHub writes the README, license and `.gitignore`, `uv init` writes the project, and the template adds beside them:
+A repo is bare when it has no `pyproject.toml`, or only the files `gh repo create` and `uv init` wrote.
+Offer the template.
+On a no, leave the repo as it is: the rules in `SKILL.md` still apply to the code.
 
-```sh
-gh repo create <owner>/<repo> --public --clone --add-readme --license mit --gitignore Python
-cd <repo>
-uv init --lib --python <floor>   # a library: src/ layout, py.typed, uv_build
-uv init --app --python <floor>   # an application: src/ layout, uv_build, and a [project.scripts] entry point
-uvx copier copy --trust gh:ozanozbeker/templates .
-```
+1. **Read the repo.**
+   Note `<owner>/<repo>` from `git remote -v`, or that there is no remote; `[project.scripts]` and `requires-python` in `pyproject.toml`; a `dagster` or `fastapi` dependency; and the account `gh auth status` shows.
+2. **Ask the questions in the table above.**
+   Lead each with the recommended answer, so the user can accept it in a word, and skip a question the repo already settles.
+   Recommend `pypi: false` when the repo has `[project.scripts]` or a framework, and `true` otherwise.
+   Recommend the oldest CPython that has not reached its end of life for `python_floor`, or the existing `requires-python`.
+   Ask about `framework` only when a dependency names one, and recommend `docs: true` for a package.
+   With no remote, also ask the visibility and the license.
+3. **Show the plan, and wait for a yes.**
+   The plan lists the commands with every answer, each file they write, each existing file they overwrite, and that `--trust` runs the template's tasks.
+4. **Run the commands.**
 
-Both `uv init` forms give the `src/` layout (measured with uv 0.13.7), which keeps the tests importing the installed package and never the working tree.
-Never pass `--bare` or `--no-package`, which drop the layout and the build backend.
-Copier writes none of the files GitHub or `uv init` wrote.
-With `--trust`, its tasks append to `.gitignore`, run `uv add --raw --group dev` for the tools, and set the classifiers and `[project.urls]` in `pyproject.toml`; without it, Copier refuses to run, and `--skip-tasks` or the answer `apply: false` prints those steps to do by hand instead.
-Replace the `hello()` stub `uv init` wrote and write a first test, because the stub fails D103 and `fail_under = 100`, and pytest exits 5 with no test.
-Then `uv add` each runtime dependency, and run the hooks:
+   ```sh
+   gh repo create <owner>/<repo> --<visibility> --clone --add-readme --license <license> --gitignore Python
+   cd <repo>
+   uv init --lib --python <floor>   # a library: src/ layout, py.typed, uv_build
+   uv init --app --python <floor>   # an application: src/ layout, uv_build, and a [project.scripts] entry point
+   uvx copier copy --trust --data repo=<repo> --data owner=<owner> --data package=<package> --data python_floor=<floor> --data pypi=<bool> --data docs=<bool> --data framework=<name> gh:ozanozbeker/templates .
+   ```
 
-```sh
-uv sync
-uv run prek install
-uv run prek run --all-files
-```
+   Skip `gh repo create` when the repo is on GitHub already, and `uv init` when `pyproject.toml` exists.
+   Pass every answer as `--data`, so Copier asks nothing twice.
+   Both `uv init` forms give the `src/` layout (measured with uv 0.13.7), which keeps the tests importing the installed package and never the working tree.
+   Never pass `--bare` or `--no-package`, which drop the layout and the build backend.
+   Copier writes none of the files GitHub or `uv init` wrote.
+   With `--trust`, its tasks append to `.gitignore`, run `uv add --raw --group dev` for the tools, and set the classifiers and `[project.urls]` in `pyproject.toml`.
+5. **Finish the project.**
+   Replace the `hello()` stub `uv init` wrote and write a first test, because the stub fails D103 and `fail_under = 100`, and pytest exits 5 with no test.
+   Then `uv add` each runtime dependency, and run the hooks:
 
-`uvx copier update` later re-applies the template's files from its newest tag and merges the change onto the repo's own edits.
+   ```sh
+   uv sync
+   uv run prek install
+   uv run prek run --all-files
+   ```
+
+   Done means every hook passes.
+6. **Apply the repository settings** with `github-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/github-style)) when it is installed: its `settings.md` lists the steps for the repo's tier, and its `SKILL.md` holds the README badges for a package.
+   Without it, say which settings are left.
+
+## Bring an existing repo to the final state
+
+A repo with its own config moves to the final state one change at a time, because the template copied over it would overwrite choices the repo made on purpose.
+
+- With `.copier-answers.yml`, the repo came from the template: run `uvx copier update --trust`, which merges the newest tag onto the repo's edits, and review the diff of every file it changes.
+- Without it, compare each config file to [What the files pin down](#what-the-files-pin-down), and propose each departure as its own change, with the reason the template gives.
+
+A config change waits for the user's yes, because a setting the repo departs from may be a decision, not a gap.
 
 ## Layout
 
