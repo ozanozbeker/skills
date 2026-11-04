@@ -1,12 +1,13 @@
 ---
-description: Prose a person reads, under ISO 24495-1 plain language, with the tidyverse reference pages as the model for a docs page. Use when writing or reviewing a docstring, a comment, a README or docs page, an error message, a commit message, a pull request body, an issue, or a reply in chat. A CLAUDE.md, AGENTS.md or skill is for an agent, and writing-for-agents owns it.
+description: Plain-language prose a person reads. Use when writing or reviewing a docstring, a comment, a README or docs page, an error message, a commit message, a pull request body or an issue.
 name: writing-style
 ---
 
 # Writing style
 
 Every sentence a person reads follows this page: a docstring, a comment, an error message, a config comment, a docs page, a commit message, an issue, a pull request body, a reply in chat.
-A document an agent reads, such as a `CLAUDE.md`, an `AGENTS.md` or a skill, follows `writing-for-agents` ([mattpocock/skills](https://github.com/mattpocock/skills)) instead when that skill is installed; without it, this page applies.
+A review applies every section below to every sentence.
+A document an agent reads, such as a `CLAUDE.md`, an `AGENTS.md` or a skill, follows `writing-for-agents` instead when that skill is installed; without it, this page applies.
 
 ## Plain language
 
@@ -25,8 +26,8 @@ ISO 24495-1 sets the standard: the reader gets what they need, finds it fast, un
 
 ## Say what happens
 
-Code raises, sets, reads, receives, returns and guarantees; it does not refuse, decide, know or promise.
-The code writes, passes, copies and keeps data; data does not land, arrive or survive.
+Code raises, sets, reads, receives, returns and guarantees.
+The code writes, passes, copies and keeps data.
 A metaphor or a personification is a sentence that has not yet said what happens.
 
 Give every sentence a verb, including a heading's description and a caption.
@@ -37,7 +38,7 @@ If the upstream term is `job`, write `job`, not `task`.
 Coin a term only for something the code names, such as a function, a class or a setting.
 Define it in the repo's glossary beside the words it replaces, or in the docstring of the thing it names when the repo has no glossary.
 
-## No em dash
+## Asides
 
 Use a colon, a semicolon, a comma, or a second sentence where an em dash would go.
 An em dash brackets an aside that reads better as its own sentence.

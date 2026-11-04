@@ -1,5 +1,5 @@
 ---
-description: Dimensional modeling, from the Kimball Group's official techniques. Business process, grain, star schemas, fact and dimension tables, surrogate and durable keys, slowly changing dimensions, hierarchies, bridge tables, conformed dimensions and the bus matrix. Use when designing, reviewing or extending a star schema, a data mart, a fact table or a dimension, declaring a grain, choosing a fact table type or a slowly changing dimension type, modeling a hierarchy or a many-to-many relationship, or planning a bus matrix.
+description: Kimball dimensional modeling. Use when designing, reviewing or extending a star schema, a fact table or a dimension, declaring a grain, choosing a slowly changing dimension type, modeling a hierarchy or a many-to-many relationship, or planning a bus matrix.
 name: kimball-style
 ---
 
@@ -81,7 +81,6 @@ Its design follows the physical event, not the report someone wants from it.
   Two fact tables are read by two queries merged on conformed row headers (drilling across, in [`bus-matrix.md`](bus-matrix.md)), because a join across two fact tables' foreign keys has uncontrolled cardinality and returns wrong numbers.
 - Query the atomic fact table first.
   An aggregate fact table, summed from the atomic table and keyed to shrunken dimensions, earns its place only when a measured query is too slow, and then as a materialized view or a metric, never the only copy of the data.
-- Two processes compared in most queries (actuals and forecast) earn a consolidated fact table at their shared grain, which moves the drill-across from every query into the load.
 - Collapse the levels of a hierarchy into one dimension: a fact table with a product key, a brand key, a category key and a department key, or one key per flag, is a centipede, and the levels belong in one dimension and the flags in columns on the fact table.
 - One column per measure, because a generic measure column multiplies the row count and makes arithmetic between measures hard.
 
@@ -139,8 +138,7 @@ The decision is per attribute, not per table; one dimension mixes types.
 
 - A dimension conforms when its attributes carry the same column names and the same domain values in every fact table that uses it, so a row header from one fact table lines up with the same header from another.
 - Define each conformed dimension once with the business's data governance representatives, load it once, and reuse it, because a second definition is a second truth and a second build.
-- A shrunken rollup dimension is a subset of a conformed dimension's rows or columns (brand from product, region from store), built from the base dimension so the values match, for aggregate fact tables and for a process captured at that grain, such as a forecast by month and brand.
-- Each business process is a row of the bus matrix and each dimension a column; build one row at a time, in [`bus-matrix.md`](bus-matrix.md).
+- [`bus-matrix.md`](bus-matrix.md) holds the bus matrix, shrunken rollup dimensions, drilling across, and aggregate and consolidated fact tables.
 
 ## Extending a model
 

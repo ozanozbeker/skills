@@ -1,7 +1,7 @@
 # Workflows, CI and deployment
 
 Sources: [best practices for workflows](https://docs.getdbt.com/best-practices/best-practice-workflows), [clone incremental models in CI](https://docs.getdbt.com/best-practices/clone-incremental-models), [optimize static analysis](https://docs.getdbt.com/best-practices/optimize-static-analysis-for-development-and-deployment), [examining builds](https://docs.getdbt.com/best-practices/materializations/6-examining-builds), [Unity Catalog](https://docs.getdbt.com/best-practices/dbt-unity-catalog-best-practices) and the [style conclusion](https://docs.getdbt.com/best-practices/how-we-style/6-how-we-style-conclusion).
-When `running-dbt-commands` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)) is installed, it owns the command syntax; this file holds the patterns.
+When `running-dbt-commands` is installed, it owns the command syntax; this file holds the patterns.
 
 ## Development
 
@@ -21,6 +21,10 @@ When `running-dbt-commands` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-
 
 ## Enforcing the style guide
 
+- When the project has no `.sqlfluff`, propose the [jaffle-shop `.sqlfluff`](https://github.com/dbt-labs/jaffle-shop/blob/main/.sqlfluff), since it encodes the SQL rules in `SKILL.md`, with two changes.
+  Set `templater = dbt` in place of `dbt-cloud`, because `dbt format` and `dbt lint` support no other templater.
+  Add `exclude_rules = ST06`, because ST06 puts simple columns before calculations and the type order in `SKILL.md` groups them by type instead.
+- When the project has no style guide, propose writing one in the README, since dbt Labs puts the guide beside the code so contributors find it.
 - Run `dbt format`, `dbt lint` and `dbt compile` as local `prek` hooks, here for a project in `dbt/`:
 
   ```toml
@@ -43,7 +47,7 @@ When `running-dbt-commands` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-
   Use its `check-*` hooks only, at a `priority` after `dbt-compile`, because they read the `target/manifest.json` that `dbt compile` writes.
   Its `dbt-parse`, `dbt-compile` and `dbt-docs-generate` hooks wrap the dbt CLI and reject dbt 2.0 flags such as `--write-catalog`, so the local hooks above run dbt instead.
   `check-model-has-description`, `check-model-has-tests` and `check-model-has-properties-file` flagged the right model on a dbt 2.0.9 manifest (schema v12) with dbt-checkpoint v2.0.10, measured 2026-11-04.
-- Install [`dbt_project_evaluator`](https://hub.getdbt.com/dbt-labs/dbt_project_evaluator/latest/) and run `dbt check` in CI with its checks at `+severity: error`, so a departure from the structure guide fails the pull request that brings it in.
+- Run `dbt check` in CI with `dbt_project_evaluator`'s checks at `+severity: error` ([`packages.md`](packages.md)), so a departure from the structure guide fails the pull request that brings it in.
 
 ## Slim CI
 

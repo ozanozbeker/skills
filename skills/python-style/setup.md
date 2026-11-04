@@ -58,7 +58,7 @@ On a no, leave the repo as it is: the rules in `SKILL.md` still apply to the cod
    ```
 
    Done means every hook passes.
-6. **Apply the repository settings** with `github-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/github-style)) when it is installed.
+6. **Apply the repository settings** with `github-style` when it is installed.
    Without it, say which settings are left.
 
 ## Add a missing tool to an existing repo

@@ -1,12 +1,12 @@
 # Mesh planning
 
 Source: [how we build our dbt Mesh](https://docs.getdbt.com/best-practices/how-we-mesh/mesh-1-intro), pages 2 to 6.
-When `working-with-dbt-mesh` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)) is installed, it owns the mechanics (groups, access, contracts, versions, cross-project `ref`); otherwise the dbt docs do.
+When `working-with-dbt-mesh` is installed, it owns the mechanics (groups, access, contracts, versions, cross-project `ref`); otherwise the dbt docs do.
 This file is the decisions before and after.
 
 ## Whether to split
 
-- Under about 500 models and a dozen regular contributors is monolith scale, and Mesh gives no immediate benefit; define `groups` with `private` access anyway, so the boundaries exist when the split comes.
+- Under about 500 models and a dozen regular contributors is monolith scale, and Mesh gives no immediate benefit.
 - An enterprise with ten domain engineers per platform engineer, or a hub-and-spoke org at five to one, fits Mesh; a single small team usually does not.
 - Weekly coordinated cross-project changes, or a cross-project prerequisite on a fifth of the work, mean the split landed in the wrong place.
 

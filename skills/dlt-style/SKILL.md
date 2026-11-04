@@ -1,6 +1,6 @@
 ---
 compatibility: Requires open-source dlt 1.30 or later; dltHub and dlt[hub] features are out of scope.
-description: dlt style, from the open-source dlt docs. Project config and secrets, sources and resources, write dispositions, incremental loading, schema contracts, REST API, SQL database and filesystem sources, destinations, testing and production runs. Use when writing, reviewing or debugging a dlt pipeline, choosing a write disposition or an incremental cursor, setting a schema contract, configuring `.dlt/config.toml` or `.dlt/secrets.toml`, or running dlt under Dagster.
+description: dlt style. Use when writing, reviewing or debugging a dlt pipeline, choosing a write disposition or an incremental cursor, setting a schema contract, configuring `.dlt/config.toml` or `.dlt/secrets.toml`, or running dlt under Dagster.
 license: Apache-2.0
 name: dlt-style
 ---
@@ -10,7 +10,7 @@ name: dlt-style
 The conventions for [dlt](https://dlthub.com/docs), the open-source data load tool, from its docs at version 1.32.0, Apache-2.0, read on 2026-11-04.
 Each rule carries its reason in one sentence; the docs page named under each heading holds the long argument.
 dlt loads raw data into a dataset, and the modeling happens downstream, in dbt or in SQL.
-The pipeline code is Python, so it also follows `python-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/python-style)) when that skill is installed.
+The pipeline code is Python, so it also follows `python-style` when that skill is installed.
 
 This skill covers open-source dlt only.
 Anything that needs a dltHub account, a dltHub license or the `dlt[hub]` extra is out of scope: `@dlt.hub.transformation`, `@dlt.hub.run`, dltHub data quality checks, the dltHub Platform, workspace profiles, `uvx dlthub-init` and the `dlthub` CLI.
@@ -31,6 +31,7 @@ dltHub's own agent toolkits are licensed for use with dltHub services only, so t
 2. **Choose the write disposition and the cursor per resource,** under [Write dispositions](#write-dispositions) and [`incremental.md`](incremental.md).
    Done means each resource has a disposition, a key when it merges, and a cursor or a stated reason it reloads in full.
 3. **Write the source under the rules below.**
+   Done means every rule below is applied, or the departure is stated with its reason.
 4. **Run it against DuckDB with a small sample.**
    Use `add_limit` on the source and `dev_mode=True` on the pipeline, so the run is fast and the dataset is thrown away.
    Run it twice: the second run of a merge resource must leave the row counts unchanged, and the second run of an incremental resource must load only new rows.
@@ -56,8 +57,7 @@ dltHub's own agent toolkits are licensed for use with dltHub services only, so t
 
 [Source](https://dlthub.com/docs/general-usage/source) and [resource](https://dlthub.com/docs/general-usage/resource).
 
-- A `@dlt.source` function groups resources; a `@dlt.resource` generator yields the data.
-  Extract nothing in the source function's body, because it runs the moment it is called, outside dlt's error handling, metrics and parallelism.
+- Extract nothing in a `@dlt.source` function's body, because it runs the moment it is called, outside dlt's error handling, metrics and parallelism.
 - Yield pages, not rows: each yield passes through the extract pipe once, so a list of rows per yield is far faster.
 - A resource may yield dicts, Pydantic models, Arrow tables, pandas frames or Polars frames.
   Arrow and Polars input skips most of normalization and goes straight to Parquet on a destination that takes it.

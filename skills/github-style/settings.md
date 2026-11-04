@@ -4,10 +4,7 @@ Every setting a repo needs, in the order that works, with the command for each.
 `R=<owner>/<repo>` throughout.
 A step marked **human** needs a browser or a secret, so an agent stops there, says what to do, and waits.
 
-| Tier | Steps |
-| --- | --- |
-| Package released to PyPI | 1 to 13 |
-| Application or pipeline with no release | 1 to 4, 8 to 11 with a `main` ruleset that requires the checks its pull requests report |
+[Tiers](SKILL.md#tiers) lists the steps each kind of repo takes.
 
 ## 1. Create the repo
 
@@ -123,7 +120,7 @@ gh api repos/$R --jq .security_and_analysis
 
 ## 11. Rulesets
 
-Both run only after step 2, and the second needs `<app id>` from step 3.
+The second needs `<app id>` from step 3.
 
 The `main` ruleset blocks every push to `main`, and a merge before `all-green` and `title` pass.
 The admin can still merge a failing pull request with **Merge without waiting for requirements to be met**, so keep that for emergencies.
@@ -169,7 +166,7 @@ EOF
 
 ## 12. First release
 
-A pull request whose description ends with `Release-As: 0.0.1`, then the release pull request that release-please opens, then the `pypi` approval on the `release.yml` run.
+Bootstrap the release as [`releases.md`](releases.md#a-new-packages-first-release) says, then approve the `pypi` job on the `release.yml` run.
 From the terminal, once the maintainer says approve:
 
 ```bash
@@ -185,3 +182,12 @@ Check one PEP 740 attestation per file on PyPI and the site over HTTPS.
 
 A `live` environment limited to `main`, no reviewer, holding the secrets a live test needs.
 Keep no secret at repo level.
+
+## Once per machine
+
+The `git sync` and `gh ship` aliases that `SKILL.md`'s pull request flow uses:
+
+```sh
+git config --global alias.sync '!git switch main && git pull && git for-each-ref --format="%(refname:short) %(upstream:track)" refs/heads | while read -r branch track; do if [ "$track" = "[gone]" ]; then git branch -D "$branch"; fi; done'
+gh alias set ship '!git push -u origin HEAD && gh pr create --fill && gh pr merge --auto --squash'
+```

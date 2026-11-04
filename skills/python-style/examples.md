@@ -24,6 +24,7 @@ payload.url = "https://example.org"  # ty: ignore[invalid-assignment]
 ```
 
 `unused-ignore-comment` at `error` makes each marked line fail the hook when its error stops firing, so the file asserts both spaces with the main `ty check` and needs no second hook.
+A widened `Literal`, an unfrozen field, or a keyword that leaks between models then breaks the hook before a release.
 
 ## Confining a dependency
 

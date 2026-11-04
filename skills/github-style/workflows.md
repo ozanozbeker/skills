@@ -31,8 +31,3 @@ Raising the floor is `uvx copier update --trust --data python_floor=<floor>`, th
 
 Auto-merge turned on with `GITHUB_TOKEN` produces a merge whose push starts no workflow, so `release-please.yml` runs on the next push to `main` and reads those commits then.
 That is fine for `chore` and `ci` commits, which start no release on their own.
-
-## A new package's first release
-
-The template writes `.release-please-manifest.json` as `{".": "0.0.0"}`.
-Set `bootstrap-sha` in `release-please-config.json` to the commit before the one that adds release-please, and end the first pull request with a `Release-As: 0.0.1` footer.

@@ -49,7 +49,7 @@ npx skills update
   Safety, then performance, then developer experience, enforced by the repo's tools.
   It checks that a repo has the core tools and their configs, and offers the [templates](https://github.com/ozanozbeker/templates) Copier template for a bare repo.
 - [dbt-style](skills/dbt-style/SKILL.md): dbt style, from the dbt Labs best-practice guides.
-  Layers, naming, SQL, Jinja, YAML and materializations, with reference pages for incremental and near-real-time models, CI workflows, custom generic tests and Mesh planning; marts are Kimball star schemas, and the official `dbt` plugin's skills own the workflow.
+  Layers, naming, SQL, Jinja, YAML and materializations, with reference pages for packages, incremental and near-real-time models, CI workflows, custom generic tests and Mesh planning; marts are Kimball star schemas, and the official `dbt` plugin's skills own the workflow.
 - [kimball-style](skills/kimball-style/SKILL.md): dimensional modeling, from the Kimball Group's official techniques.
   Business process, grain, fact and dimension tables, keys and slowly changing dimensions, with reference pages for the hybrid SCD types and late rows, ragged hierarchies and bridge tables, the bus matrix and special-purpose patterns, for any warehouse and any tool.
 - [dlt-style](skills/dlt-style/SKILL.md): dlt style, from the open-source dlt docs.

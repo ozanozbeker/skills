@@ -38,7 +38,7 @@ Source: the [Kimball techniques](https://www.kimballgroup.com/data-warehouse-bus
 
 - A fact surrogate key is a hash of the columns that identify the event, such as the order number and line number, with no dimension behind it, which identifies a row without its dimension keys and gives an incremental load a key to merge on.
 - A fact row with an effective date, an expiration date and a current flag fits a slowly changing balance, where a periodic snapshot would write identical rows each period, and little else.
-- Hundreds of sparse measures stay one column each on a wide fact table, because columnar storage keeps an empty column at almost no cost; a measure-type dimension, one generic fact and a measure key per row, multiplies the row count and makes arithmetic between measures hard.
+- Hundreds of sparse measures stay one column each on a wide fact table, because columnar storage keeps an empty column at almost no cost.
 
 ## Load metadata on a fact row
 
