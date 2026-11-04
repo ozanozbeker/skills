@@ -21,8 +21,29 @@ When `running-dbt-commands` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-
 
 ## Enforcing the style guide
 
+- Run `dbt format`, `dbt lint` and `dbt compile` as local `prek` hooks, here for a project in `dbt/`:
+
+  ```toml
+  [[repos]]
+  repo = "local"
+  hooks = [
+    {id = "dbt-format", name = "dbt format", entry = "uv run --frozen dbt format", language = "system", files = '^dbt/.*\.sql$', pass_filenames = false, require_serial = true, priority = 10},
+    {id = "dbt-lint", name = "dbt lint", entry = "uv run --frozen dbt lint", language = "system", files = '^dbt/.*\.sql$', pass_filenames = false, require_serial = true, priority = 20},
+    {id = "dbt-compile", name = "dbt compile", entry = "uv run --frozen dbt compile --static-analysis strict", language = "system", files = '^dbt/.*\.(sql|ya?ml)$', pass_filenames = false, require_serial = true, priority = 30},
+  ]
+  ```
+
+  Each hook takes its own `priority`, because prek runs hooks that share one at the same time, and `dbt lint` would read a file that `dbt format` is rewriting.
+  `pass_filenames = false` runs dbt once over the whole project, because `dbt format` takes one file at most and fails on two.
+  `require_serial = true` changes nothing while dbt runs once, and keeps one dbt process per hook if a later edit passes file names.
+  The entries carry no `--project-dir`, because dbt reads `DBT_PROJECT_DIR` and `DBT_PROFILES_DIR` from a `.env` in the directory it runs from, and prek runs hooks from the repo root.
+  Format and lint match SQL only, because both raise "No lintable SQL file matched" on a YAML path; compile also matches YAML, since it is the step that reads it.
+  dbt 2.0.9, measured 2026-11-04.
 - Add [`dbt-checkpoint`](https://github.com/dbt-checkpoint/dbt-checkpoint) hooks once the style guide is written and the codebase conforms, so every commit follows it.
-- Install [`dbt_project_evaluator`](https://github.com/dbt-labs/dbt-project-evaluator) to flag deviations from the structure guide across modeling, testing, documentation, performance and governance.
+  Use its `check-*` hooks only, at a `priority` after `dbt-compile`, because they read the `target/manifest.json` that `dbt compile` writes.
+  Its `dbt-parse`, `dbt-compile` and `dbt-docs-generate` hooks wrap the dbt CLI and reject dbt 2.0 flags such as `--write-catalog`, so the local hooks above run dbt instead.
+  `check-model-has-description`, `check-model-has-tests` and `check-model-has-properties-file` flagged the right model on a dbt 2.0.9 manifest (schema v12) with dbt-checkpoint v2.0.10, measured 2026-11-04.
+- Install [`dbt_project_evaluator`](https://hub.getdbt.com/dbt-labs/dbt_project_evaluator/latest/) and run `dbt check` in CI with its checks at `+severity: error`, so a departure from the structure guide fails the pull request that brings it in.
 
 ## Slim CI
 
@@ -40,7 +61,7 @@ When `running-dbt-commands` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-
   ```
 
   `state:old` skips brand-new incremental models, which have no production relation.
-  `dbt clone` needs dbt 1.6 or later and a warehouse with zero-copy cloning; elsewhere it creates pointer views.
+  `dbt clone` needs a warehouse with zero-copy cloning; elsewhere it creates pointer views.
 - With `on_schema_change='fail'`, an added column fails the incremental build in CI and passes a full refresh.
   dbt Labs prefers that red check, overridden on purpose, then `dbt build --full-refresh --select <model>` in production right after merge, over a green CI that hides the production failure.
 - Test an incremental model in both incremental and full-refresh mode when the two paths can diverge.
@@ -64,7 +85,7 @@ When `running-dbt-commands` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-
 
 Set `grants` in the model config or `dbt_project.yml` instead of writing `grant` SQL in hooks, so permissions are version-controlled, reapplied every run, and applied by the adapter's efficient path.
 
-## Static analysis (dbt v2)
+## Static analysis
 
 - Use `--static-analysis strict` in development and the default `baseline` in deployment, because `strict` downloads every source's schema and raises errors, while `baseline` skips the download and warns.
   `strict` compile time grows with the source count.
@@ -77,6 +98,7 @@ Set `grants` in the model config or `dbt_project.yml` instead of writing `grant`
 - Read the completion line (`OK created sql view model main.stg_products ... [OK in 0.13s]`) for status, materialization and build time; a model's START and completion lines sit apart because threads interleave.
 - Pick the longest-running models from the platform's Model Timing tab (critical path, longest model, wall clock) before changing a materialization.
   With several commands in one job, the tab shows the last command's timings, so put the command to measure last or run one command per job.
+- Profile a slow model with [`dbt_query_profiler`](https://hub.getdbt.com/dbt-labs/dbt_query_profiler/latest/) before changing its materialization: find the query, read its plan, then its stats, because the plan shows whether the cost is the model's logic or its materialization.
 - Without the platform, the [`dbt_artifacts`](https://github.com/brooklyn-data/dbt_artifacts) package models `run_results` and `manifest` for a BI tool.
 
 ## Databricks Unity Catalog

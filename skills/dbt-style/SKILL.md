@@ -1,5 +1,6 @@
 ---
-description: dbt style, from the dbt Labs best-practice guides. Layers, naming, SQL, Jinja, YAML, materializations, incremental models, snapshots, near-real-time patterns, CI selectors, custom generic tests and Mesh planning. Use when writing, reviewing or restructuring a dbt model, source, macro, test, snapshot or `dbt_project.yml`, choosing a materialization or incremental strategy, setting up a dbt CI job, or planning a project split.
+compatibility: Requires dbt 2.0 or later.
+description: dbt style, from the dbt Labs best-practice guides. Layers, packages, naming, SQL, Jinja, YAML, materializations, incremental models, snapshots, near-real-time patterns, CI selectors, custom generic tests and Mesh planning. Use when writing, reviewing or restructuring a dbt model, source, macro, test, snapshot `dbt_project.yml` or `packages.yml`, choosing a materialization or incremental strategy, setting up a dbt CI job, or planning a project split.
 license: Apache-2.0
 name: dbt-style
 ---
@@ -8,6 +9,7 @@ name: dbt-style
 
 The conventions from the [dbt Labs best-practice guides](https://docs.getdbt.com/best-practices), Apache-2.0, read on 2026-11-03.
 Each rule carries its reason in one sentence; the page linked under each heading holds the long argument.
+It assumes dbt 2.0 or later.
 This skill decides what the code looks like.
 When `using-dbt-for-analytics-engineering` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)) is installed, it decides how the work is done: data discovery, `dbt show` validation, impact analysis.
 Load both for model work; without it, the steps below stand alone.
@@ -19,7 +21,7 @@ These rules are the default for a new project and for a choice the project has n
 | Reference | Load when |
 | --- | --- |
 | [`incremental.md`](incremental.md) | Writing an incremental model or a snapshot, choosing between them, or building near-real-time models (microbatch, streams, dynamic tables, lambda views) |
-| [`workflows.md`](workflows.md) | Setting up a CI job, a slim CI selector, a rerun, grants, static analysis, or Databricks Unity Catalog, or reading a build's timings |
+| [`workflows.md`](workflows.md) | Setting up the `prek` hooks, a CI job, a slim CI selector, a rerun, grants, static analysis, or Databricks Unity Catalog, or reading a build's timings |
 | [`tests.md`](tests.md) | Writing a custom generic test or overriding a built-in one |
 | [`mesh.md`](mesh.md) | Deciding whether and where to split a project, grouping a monolith, or retiring a model version; `working-with-dbt-mesh` ([dbt-labs/dbt-agent-skills](https://github.com/dbt-labs/dbt-agent-skills)), when installed, holds the mechanics |
 
@@ -31,9 +33,14 @@ These rules are the default for a new project and for a choice the project has n
    Done means you can name the project's convention for each section below, or say the project has none.
 2. **Write under the project's conventions, then the rules below.**
 3. **Run the tools.**
-   Run `sqlfluff lint` on the changed files when the project has a `.sqlfluff`, and `dbt parse` for every change.
-   Done means both exit 0 with zero ignores added.
-   When the project has no SQL linter, propose the [jaffle-shop `.sqlfluff`](https://github.com/dbt-labs/jaffle-shop/blob/main/.sqlfluff) to the user, since it encodes the SQL rules below.
+   Run `dbt format`, then `dbt lint`, then `dbt compile --static-analysis strict`, in that order.
+   `dbt format` fixes only the layout, so `dbt lint` still catches the rest, such as keyword case, and `dbt lint --fix` repairs what it can.
+   Both read only SQL files, so `dbt compile` is the step that checks the YAML.
+   Done means every command exits 0 with zero ignores added.
+   When the project has no `.sqlfluff`, propose the [jaffle-shop `.sqlfluff`](https://github.com/dbt-labs/jaffle-shop/blob/main/.sqlfluff) to the user, since it encodes the SQL rules below.
+   Change two things in it.
+   Set `templater = dbt` in place of jaffle-shop's `dbt-cloud`, because `dbt format` and `dbt lint` support no other templater.
+   Add `exclude_rules = ST06`, because ST06 puts simple columns before calculations and the type order below groups them by type instead.
    When the project has no style guide, propose writing one in the README, since dbt Labs puts the guide beside the code so contributors find it.
 
 ## Layers
@@ -60,7 +67,7 @@ Development runs the other way from the DAG: mock the output in a spreadsheet wi
   When a concept needs a join to exist, build `base_<source>__<entity>s` models in a `base/` subfolder and join them in the staging model.
   Unioning or deduplicating a source to reach its true grain is still source-conformed work and belongs here.
 - Materialize as a view, so downstream models always read fresh source data and no storage goes to tables nobody queries.
-- Write the first few staging models by hand to learn the pattern, then generate the rest with the [codegen](https://github.com/dbt-labs/dbt-codegen) package.
+- Write the first few staging models by hand to learn the pattern, then generate the rest with `codegen` ([Packages](#packages)).
 
 ### Intermediate
 
@@ -118,6 +125,31 @@ Development runs the other way from the DAG: mock the output in a spreadsheet wi
 - Define `groups` with `private` access early, even in a monolith, because group boundaries become project boundaries later.
 - Semantic models and metrics live under `model-paths`, either beside the mart (`orders.yml`) or in `models/semantic_models/` with a `sem_` prefix; a file outside `model-paths` parses silently into an empty `semantic_manifest.json`.
   Default to the subfolder on a project that already has marts.
+
+## Packages
+
+Add these four dbt Labs packages to `packages.yml`, each pinned to an exact version, because each replaces code the project would otherwise write and maintain.
+
+| Package | Reach for it when |
+| --- | --- |
+| [`dbt_utils`](https://hub.getdbt.com/dbt-labs/dbt_utils/latest/) | A test or a macro is about to be written: it holds the common generic tests, `generate_surrogate_key`, `date_spine`, `star` and `union_relations` |
+| [`codegen`](https://hub.getdbt.com/dbt-labs/codegen/latest/) | A source, a staging model or a YAML file is about to be typed out by hand |
+| [`dbt_project_evaluator`](https://hub.getdbt.com/dbt-labs/dbt_project_evaluator/latest/) | A project needs a check that it follows the structure guide across modeling, testing, documentation, performance and governance |
+| [`dbt_query_profiler`](https://hub.getdbt.com/dbt-labs/dbt_query_profiler/latest/) | A model is slow: it finds the query, its plan and its stats on Snowflake, BigQuery, Databricks, Redshift or DuckDB |
+
+- Check a package's dbt v2 status on its hub page before adding it, and run what the project will use on its own warehouse, because the hub's status covers parsing only.
+- `dbt_project_evaluator` 2.x builds no models: each rule is a native dbt check over the information schema, which needs no warehouse.
+  The checks run before every `dbt build` and on demand with `dbt check`, and warn by default.
+  Set `+severity: error` under `checks: dbt_project_evaluator:` in `dbt_project.yml`, so a violation fails `dbt check` and `dbt build`.
+- `dbt_query_profiler` finds a model's queries by the `node_id` in dbt's default query comment.
+  On DuckDB the query log held no comment, so `model_name` found nothing; confirm it on the project's warehouse before relying on it.
+- `dbt_project_evaluator` and `dbt_query_profiler` ship agent skills, which `dbt deps` installs once `dbt_project.yml` sets `flags: ai_provider: claude`.
+- Measured 2026-11-04 on dbt 2.0.9 and DuckDB.
+  The two failures below likely come from DuckDB under dbt 2.0, not from the packages; they are not yet tested on another warehouse.
+  - `dbt_utils` 1.4.1: `generate_surrogate_key`, `date_spine`, `star`, `union_relations` and three generic tests built and passed.
+  - `codegen` 0.14.1: `generate_model_yaml` and `generate_base_model` worked; `generate_source` failed in `dbt_utils.get_relations_by_pattern`, which queries an `information_schema.tables` that DuckDB does not expose there.
+  - `dbt_project_evaluator` 2.0.2: `dbt check` exited 0 at the default severity and 1 at `error`.
+  - `dbt_query_profiler` 0.3.0: `print_query_plan` worked; `print_query_stats` and `print_execution_plan` by `model_name` failed as above, with DuckDB logging on.
 
 ## Naming
 
