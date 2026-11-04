@@ -1,6 +1,6 @@
 # Workflow files
 
-The workflows live in the `templates` repo, a [Copier](https://copier.readthedocs.io/) template: `ozanozbeker/templates` on GitHub and `~/dev/templates` when cloned, under `shared/.github/` and `python/.github/`.
+The workflows live in the `templates` repo, a [Copier](https://copier.readthedocs.io/) template: `ozanozbeker/templates` on GitHub, under `shared/.github/` and `python/.github/`.
 Each comment inside a workflow records the reason for a step, so the template is the reference and this page is the map.
 Read a workflow there before changing it, and change it there first, so every repo gets the fix on its next `copier update`.
 
@@ -9,17 +9,17 @@ Read a workflow there before changing it, and change it there first, so every re
 | File | Answer | Job |
 | --- | --- | --- |
 | `.github/workflows/ci.yml` | every repo | `lint` runs `prek run --all-files` and `gitleaks-ci`; `dependency-review` on a pull request; `all-green` is the one required check |
-| `.github/workflows/ci.yml` | `language: python` | Adds `test` across the OS matrix, `next-python` (may fail) and `lowest`, which also checks coverage |
+| `.github/workflows/ci.yml` | every repo | Adds `test` across the OS matrix, `next-python` (may fail) and `lowest`, which also checks coverage |
 | `.github/workflows/ci.yml` | `docs` | Adds the `docs` job that runs `great-docs build` |
 | `.github/workflows/pr-title.yml` | every repo | Checks the title is a Conventional Commit, because the squash commit takes it and release-please reads that commit |
 | `.github/workflows/dependabot-auto-merge.yml` | every repo | Turns auto-merge on for each Dependabot pull request, so it merges once `all-green` and `title` pass |
-| `.github/workflows/prek-update.yml` | every repo | Daily `prek update --freeze --cooldown-days 7`; with `language: python`, also `uv lock --upgrade`. Opens its pull request with the App token so CI runs on it |
-| `.github/dependabot.yml` | every repo | Daily with a 7-day cooldown for the actions; with `language: python`, the `uv` ecosystem with `increase-if-necessary`, so a floor rises only in a `deps:` commit |
+| `.github/workflows/prek-update.yml` | every repo | Daily `prek update --freeze --cooldown-days 7`; also `uv lock --upgrade`. Opens its pull request with the App token so CI runs on it |
+| `.github/dependabot.yml` | every repo | Daily with a 7-day cooldown for the actions and the `uv` ecosystem with `increase-if-necessary`, so a floor rises only in a `deps:` commit |
 | `.github/workflows/release-please.yml` | `pypi` | Opens and updates the release pull request from the commits on `main` |
 | `.github/workflows/release.yml` | `pypi` | On a tag: build, `pypi` with approval and attestations; with `docs`, then `site` and `pages` |
 | `release-please-config.json`, `.release-please-manifest.json` | `pypi` | The Python release type, a `uv.lock` extra file, and the changelog sections |
 
-Inside a `.jinja` file, a `{% if language == "python" %}` block holds the lines that answer adds, so one `ci.yml.jinja` shows every variant.
+Inside a `.jinja` file, an `{% if %}` block holds the lines that an answer adds, so one `ci.yml.jinja` shows every variant.
 
 ## The versions in `ci.yml`
 

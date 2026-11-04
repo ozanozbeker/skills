@@ -7,8 +7,7 @@ A step marked **human** needs a browser or a secret, so an agent stops there, sa
 | Tier | Steps |
 | --- | --- |
 | Package released to PyPI | 1 to 13 |
-| Application or pipeline with no release | 1, 2, 8 to 11 with a `main` ruleset that requires the checks its pull requests report |
-| Repo with no Python | 1, 2, 8, 9, 11 |
+| Application or pipeline with no release | 1 to 4, 8 to 11 with a `main` ruleset that requires the checks its pull requests report |
 
 ## 1. Create the repo
 
@@ -121,8 +120,6 @@ gh api -X PATCH repos/$R/code-scanning/default-setup -f state=configured -f quer
   -f 'languages[]=actions' -f 'languages[]=python'
 gh api repos/$R --jq .security_and_analysis
 ```
-
-A repo with no Python drops `languages[]=python`.
 
 ## 11. Rulesets
 
