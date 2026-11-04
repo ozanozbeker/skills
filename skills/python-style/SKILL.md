@@ -181,7 +181,7 @@ An ignore comment carries the reason beside it and is the exception, never the f
 
 [`setup.md`](setup.md) maps the config files a new repo starts from, by kind of repo, to the Copier answers in the `templates` repo that holds them with the reason for each setting.
 Read it when setting up a repo or when a repo's config departs from the table above.
-What happens after `git push` (the pull request, CI, the release) is the `github-style` skill's.
+What happens after `git push` (the pull request, CI, the release) is owned by `github-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/github-style)) when it is installed.
 
 Write `scripts/*.py`, not `scripts/*.sh`.
 A Python script with PEP 723 inline metadata runs under `uv run` on every platform, is typed and linted, and fails the same way for everyone on the team.
@@ -210,7 +210,7 @@ A Python script with PEP 723 inline metadata runs under `uv run` on every platfo
 
 ### Comments and docstrings
 
-Every sentence a person reads, in a comment, a docstring, a commit message or a pull request, follows `writing-style`.
+Every sentence a person reads, in a comment, a docstring, a commit message or a pull request, follows `writing-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/writing-style)) when it is installed.
 A docstring follows numpydoc, and [`docstrings.md`](docstrings.md) holds what the `D` rules and numpydoc's validation cannot check.
 
 ### Off-by-one

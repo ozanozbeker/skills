@@ -6,7 +6,7 @@ name: writing-style
 # Writing style
 
 Every sentence a person reads follows this page: a docstring, a comment, an error message, a config comment, a docs page, a commit message, an issue, a pull request body, a reply in chat.
-A document an agent reads, such as a `CLAUDE.md`, an `AGENTS.md` or a skill, follows `mattpocock-skills:writing-for-agents` instead.
+A document an agent reads, such as a `CLAUDE.md`, an `AGENTS.md` or a skill, follows `writing-for-agents` ([mattpocock/skills](https://github.com/mattpocock/skills)) instead when that skill is installed; without it, this page applies.
 
 ## Plain language
 
