@@ -1,6 +1,6 @@
 # Setting up a repo
 
-The config files that [`SKILL.md`](SKILL.md) assumes live in the `templates` repo, a [Copier](https://copier.readthedocs.io/) template: `ozanozbeker/templates` on GitHub and `~/dev/templates` when cloned.
+The config files that [`SKILL.md`](SKILL.md) assumes live in the `templates` repo, a [Copier](https://copier.readthedocs.io/) template: `ozanozbeker/templates` on GitHub.
 Each comment inside a file records the reason for a setting, so the template is the reference and this page is the map.
 
 ## Answer the questions
@@ -9,7 +9,6 @@ Copier asks these, and the answers decide which files exist and what they hold:
 
 | Question | Answer by repo kind |
 | --- | --- |
-| `language` | `python` for a package or an application, `none` for a repo of prose and config |
 | `pypi` | `true` for a package released to PyPI, `false` for an application or pipeline |
 | `docs` | `true` for a package with a site on GitHub Pages; asked only when `pypi` is `true` |
 | `framework` | `dagster`, `fastapi`, or empty |
@@ -18,8 +17,8 @@ Copier asks these, and the answers decide which files exist and what they hold:
 
 | Answer | Files |
 | --- | --- |
-| every repo | `prek.toml` (Conventional Commits, gitleaks, zizmor, actionlint, typos, the built-in hooks, rumdl, tombi), `rumdl.toml`, `tombi.toml`, `SECURITY.md`, and the `github-style` workflows that every repo carries |
-| `language: python` | `prek.toml` adds `default_language_version` and the local `ruff`, `uv lock --check` and `ty` hooks; `ruff.toml`, `ty.toml`, `pytest.ini`, `.coveragerc`, `typos.toml`; `rumdl.toml` gains the quarto flavor |
+| every repo | `prek.toml` (Conventional Commits, gitleaks, zizmor, actionlint, typos, the built-in hooks, rumdl, tombi), `rumdl.toml`, `tombi.toml`, `SECURITY.md`, and the workflows that `github-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/github-style)) describes |
+| every repo, Python tools | `prek.toml` adds `default_language_version` and the local `ruff`, `uv lock --check` and `ty` hooks; `ruff.toml`, `ty.toml`, `pytest.ini`, `.coveragerc`, `typos.toml`; `rumdl.toml` gains the quarto flavor |
 | `pypi` | release-please and the release workflows; `rumdl.toml` excludes `CHANGELOG.md` |
 | `docs` | The `docs` job in CI and the `site` and `pages` jobs after a release; the tasks add the `docs` group and the Documentation link |
 | `framework: dagster` | `ruff.toml` ignores on `definitions.py` and the asset modules, runtime-evaluated decorators; `pytest.ini` sets `pythonpath = .`; the tasks add `dagster-dg-cli` and `dagster-webserver` to `dev` |
@@ -34,7 +33,7 @@ gh repo create <owner>/<repo> --public --clone --add-readme --license mit --giti
 cd <repo>
 uv init --lib --python <floor>   # a library: src/ layout, py.typed, uv_build
 uv init --app --python <floor>   # an application: src/ layout, uv_build, and a [project.scripts] entry point
-uvx copier copy --trust gh:ozanozbeker/templates .   # or ~/dev/templates while editing the template
+uvx copier copy --trust gh:ozanozbeker/templates .
 ```
 
 Both `uv init` forms give the `src/` layout (measured with uv 0.13.7), which keeps the tests importing the installed package and never the working tree.
@@ -50,7 +49,6 @@ uv run prek install
 uv run prek run --all-files
 ```
 
-For `language: none`, `uvx prek install` and `uvx prek run --all-files`.
 `uvx copier update` later re-applies the template's files from its newest tag and merges the change onto the repo's own edits.
 
 ## Layout

@@ -1,14 +1,16 @@
 ---
-description: Get a repo from any state to the python-style and github-style standard, asking the few questions that decide which files and settings it gets.
+compatibility: Requires the python-style and github-style skills, git, gh and uv.
+description: Get a repo from any state to the python-style and github-style standard, asking the few questions that decide which files and settings it gets. Use only when the user asks to set up or scaffold a repo.
 disable-model-invocation: true
 name: setup-repo
 ---
 
 # Set up a repo
 
-Scaffold a repo to the standard the two style skills describe: the files from the `templates` repo, a Copier template that [`python-style/setup.md`](../python-style/setup.md) and [`github-style/workflows.md`](../github-style/workflows.md) map, and the repository settings from [`github-style/settings.md`](../github-style/settings.md).
+Scaffold a repo to the standard that `python-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/python-style)) and `github-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/github-style)) describe: the files from the `templates` repo, a Copier template that `python-style`'s `setup.md` and `github-style`'s `workflows.md` map, and the repository settings from `github-style`'s `settings.md`.
 This skill holds the questions and the order.
-The three files hold the content, so read each one before writing from it.
+The three files hold the content, so load both skills and read each file before writing from it.
+When either skill is missing, stop and tell the user to install it, because the content lives only there.
 
 Prompt-driven, not a script.
 Explore, present what you found, confirm, then write.
@@ -28,7 +30,6 @@ Read the repo before asking anything:
 - `.github/workflows/`, `.github/dependabot.yml`, `release-please-config.json`: any of them?
 - Framework signals: `dagster` or `fastapi` in the dependencies, a `definitions.py`, a `defs/` directory, an `app.py` with a `FastAPI()` call.
 - `CLAUDE.md`, `CONTRIBUTING.md`, `docs/agents/`: present or not.
-- `~/dev/templates/copier.yml`: is the template on this machine?
 - `gh auth status`: logged in, and as whom?
 - For an existing GitHub repo, the current settings: `gh api repos/$R --jq '{allow_squash_merge, allow_auto_merge, delete_branch_on_merge, security_and_analysis}'` and `gh api repos/$R/rulesets --jq '.[].name'`.
 
@@ -40,38 +41,30 @@ Skip a section the exploration already settled.
 Each section maps to a Copier question, named in bold.
 
 **Section A: Tier.**
-One of three, and everything else follows from it:
+One of two, and everything else follows from it:
 
 - **Package**: released to PyPI, with docs on Pages.
-  `language: python`, `pypi: true`.
+  `pypi: true`.
   Recommend when `pyproject.toml` has a `[build-system]` and no `[project.scripts]`, or the user says library.
 - **Application**: Python with no release.
-  `language: python`, `pypi: false`.
+  `pypi: false`.
   Recommend when there is a `[project.scripts]` entry or framework signals.
-- **No Python**: prose, config and hooks only.
-  `language: none`.
-  Recommend when there is no `pyproject.toml`.
 
-**Section B: Template source.**
-`gh:ozanozbeker/templates` at its newest tag, unless the user is editing the template, in which case `~/dev/templates` so the edits render.
-Say that `.copier-answers.yml` records the source, and a later `copier update` resolves it again.
-Ask only when exploration found `~/dev/templates/copier.yml`.
-
-**Section C: Python floor.**
-Package or application only: `python_floor`.
+**Section B: Python floor.**
+`python_floor`.
 Recommend the oldest CPython that has not reached its end of life, or the existing `requires-python` when there is one.
 
-**Section D: Framework.**
+**Section C: Framework.**
 Only when exploration found framework signals: `framework`.
 Ask once: `dagster`, `fastapi`, or none?
 Recommend the one the signals name.
 
-**Section E: Docs site.**
+**Section D: Docs site.**
 Package only: `docs`.
 Recommend yes: the `docs` group, the `docs` job and the `site` and `pages` jobs.
 On no, skip settings step 7.
 
-**Section F: Repository settings.**
+**Section E: Repository settings.**
 Only with a GitHub remote.
 Ask whether to apply the settings now or write the files only.
 Recommend now for a fresh repo.
@@ -84,12 +77,13 @@ Let the user edit the list before anything is written.
 
 ### 4. Write the files
 
-Three commands, in this order, from `python-style/setup.md`, which holds what each one writes and what to do after:
+Three commands, in this order, from `python-style`'s `setup.md`, which holds what each one writes and what to do after.
+The template always comes from `gh:ozanozbeker/templates` at its newest tag, and `.copier-answers.yml` records that source for a later `copier update`:
 
 ```sh
 gh repo create <owner>/<repo> --public --clone --add-readme --license mit --gitignore Python   # skip when the repo is on GitHub already
-uv init --lib --python <floor>   # or --app; skip when pyproject.toml exists, and for `language: none`
-uvx copier copy --trust --data repo=<repo> --data owner=<owner> --data language=<python|none> --data package=<package> --data python_floor=<floor> --data pypi=<bool> --data docs=<bool> --data framework=<name> gh:ozanozbeker/templates .
+uv init --lib --python <floor>   # or --app; skip when pyproject.toml exists
+uvx copier copy --trust --data repo=<repo> --data owner=<owner> --data package=<package> --data python_floor=<floor> --data pypi=<bool> --data docs=<bool> --data framework=<name> gh:ozanozbeker/templates .
 ```
 
 Ask the visibility and the license before the first.
@@ -97,7 +91,7 @@ Pass every answer as `--data` so nothing is asked twice, and say in the plan tha
 A repo with `.copier-answers.yml` runs `uvx copier update --trust` instead of the third.
 Show `git status` and the diff of any overwritten file before going on.
 Then follow the rest of `setup.md`: the stub, the first test, `uv sync`, `uv run prek install` and `uv run prek run --all-files`.
-For a package, add the badges from `github-style/SKILL.md` under the README's title.
+For a package, add the badges from `github-style`'s `SKILL.md` under the README's title.
 Done when every hook passes.
 
 ### 5. Apply the settings
