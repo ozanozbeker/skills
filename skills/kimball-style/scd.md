@@ -29,9 +29,9 @@ Source: the [Kimball techniques](https://www.kimballgroup.com/data-warehouse-bus
 
 ## Type 6
 
-- A Type 2 dimension plus a `current_<attribute>` column per tracked attribute.
-- A change inserts the new Type 2 row, then overwrites `current_<attribute>` on every row with the same durable key, so the historical row carries both the value at the time and the value now.
-- A query groups by the Type 2 attribute for as-was and by the current attribute for as-is, in one pass.
+- A Type 2 dimension, read with the current value of each tracked attribute beside the historical one.
+- Derive the current value at query time, with `first_value(<attribute>) over (partition by <durable key> order by <effective date> desc)` or a join to the Type 7 current-rows view, instead of storing a `current_<attribute>` column, because a stored copy forces a rewrite of every row of the durable key on each change.
+- A query groups by the Type 2 attribute for as-was and by the derived current attribute for as-is, in one pass.
 
 ## Type 7
 

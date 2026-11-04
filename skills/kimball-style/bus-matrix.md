@@ -25,5 +25,4 @@ Source: the [Kimball techniques](https://www.kimballgroup.com/data-warehouse-bus
 - Two fact tables are compared by one query per table, each grouped by identical conformed attributes, merged on those row headers; BI tools call it stitch or multipass.
 - In SQL, aggregate each fact table to the shared grain in its own CTE, then full outer join the aggregates on the conformed keys, because joining the atomic tables first multiplies rows.
 - A consolidated fact table is that query written into the load: build one when the comparison runs constantly, because it adds load work and removes the drill-across from every report.
-- An aggregate fact table is keyed to shrunken dimensions, summed from the atomic table, and published at the same time as the atomic table, so aggregate navigation in the BI layer picks it and every tool gains the same speed.
-  An OLAP cube is an aggregate that users query directly.
+- An aggregate fact table is keyed to shrunken dimensions, summed from the atomic table, and published at the same time as the atomic table, and built only when a measured query on the atomic table is too slow.
