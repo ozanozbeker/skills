@@ -18,12 +18,11 @@ Read it when a rule needs defending or when a case is not covered here.
 
 ## Steps
 
-1. **Check the repo against the final state.**
-   The final state is the tooling table below plus the files in [`setup.md`](setup.md).
-   Look for `pyproject.toml`, `prek.toml` and `.copier-answers.yml`, and read `setup.md` when any is missing or a config file departs from it.
-   A bare repo gets the offer of the template; an existing repo gets one proposed change per departure.
-   A departure never blocks the task at hand: name it, propose the change, and carry on.
-   Done means you can say whether the repo is bare, from the template, or set up its own way, and list the departures still open.
+1. **Check the repo's tools.**
+   [`setup.md`](setup.md) lists the six core tools and the config file each needs.
+   Read it when a tool or its config is missing: a bare repo gets the offer of the template, and an existing repo gets one proposed change per missing tool.
+   A missing tool never blocks the task at hand: name it, propose the change, and carry on.
+   Done means you can name each core tool the repo lacks, or say it has them all.
 2. **Sketch before writing.**
    Name every limit (a loop bound, a batch size, a timeout, a queue depth) and every resource the code touches (network, disk, memory, CPU).
    Name the rung of the dependency ladder each piece sits on.
@@ -91,6 +90,7 @@ Python has three places for that density, and `assert` in `src/` is none of them
   Write it as a test.
 - Pair the types too, with a typing test.
   A public type is API, so `tests/typing/` holds code a caller would write: `assert_type` on each public attribute and return for the positive space, and a call that must fail for the negative space, marked `# ty: ignore[<rule>]`.
+  [`examples.md`](examples.md) shows one.
   ty's `unused-ignore-comment` fails the check when the error behind that mark stops firing, so a widened `Literal`, an unfrozen field, or a keyword that leaks between models breaks the hook before a release.
   pytest cannot see any of these, because the runtime accepts the bad value or raises a different error.
 
@@ -165,6 +165,7 @@ Keep abstractions to the minimum that makes the best sense of the domain: an int
 
 Confine a dependency that the codebase wraps to the one module that wraps it, and make the confinement mechanical.
 ruff's `banned-api` fails any other import with a message that names the ADR, the module's docstring states that it is the only importer, and `per-file-ignores` lists the allowed files, so the seam is reviewable in config.
+[`examples.md`](examples.md) shows the config.
 A parser, an HTTP client, a CLI framework and a database driver each earn this: an upstream change then touches one file, and a pre-pass that works around an upstream bug has one home.
 
 ### Tooling
@@ -185,8 +186,8 @@ An ignore comment carries the reason beside it and is the exception, never the f
 | TOML | `tombi` |
 | Hooks | `prek`, with every `rev` a frozen SHA |
 
-[`setup.md`](setup.md) holds the files of the final state and how to reach it: the template for a bare repo, one change at a time for an existing one.
-Read it when setting up a repo or when a repo's config departs from the table above.
+[`setup.md`](setup.md) lists the config file each tool needs and how to add a missing one: the template for a bare repo, one change at a time for an existing one.
+Read it when setting up a repo or when a tool or its config is missing.
 What happens after `git push` (the pull request, CI, the release) is owned by `github-style` ([ozanozbeker/skills](https://github.com/ozanozbeker/skills/tree/main/skills/github-style)) when it is installed.
 
 Write `scripts/*.py`, not `scripts/*.sh`.
