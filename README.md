@@ -52,8 +52,8 @@ npx skills update
   Layers, naming, SQL, Jinja, YAML and materializations, with reference pages for packages, incremental and near-real-time models, CI workflows, custom generic tests and Mesh planning; marts are Kimball star schemas, and the official `dbt` plugin's skills own the workflow.
 - [kimball-style](skills/kimball-style/SKILL.md): dimensional modeling, from the Kimball Group's official techniques.
   Business process, grain, fact and dimension tables, keys and slowly changing dimensions, with reference pages for the hybrid SCD types and late rows, ragged hierarchies and bridge tables, the bus matrix and special-purpose patterns, for any warehouse and any tool.
-- [dlt-style](skills/dlt-style/SKILL.md): dlt style, from the open-source dlt docs.
-  Config and secrets, sources and resources, write dispositions, incremental loading, schema contracts, the REST API, SQL database and filesystem sources, testing and production runs; dltHub's paid features are out of scope.
+- [dlt-style](skills/dlt-style/SKILL.md): dlt style, from the open-source dlt docs and runs of dlt 1.32.0 against DuckDB.
+  DuckDB, Polars, marimo and uv first: config and secrets through a redacting helper script, sources and resources, write dispositions and merge strategies, incremental loading, the REST API, SQL database and filesystem sources, debugging, performance, checking and exploring loaded data, testing and production runs; dltHub's paid features, its MCP server and its agent toolkits are out of scope.
 - [github-style](skills/github-style/SKILL.md): everything that happens to a commit after `git push`.
   Pull requests, CI, Dependabot, release-please, PyPI and the docs site.
 
