@@ -17,7 +17,7 @@ Source: the [Kimball techniques](https://www.kimballgroup.com/data-warehouse-bus
 
 ## Several time zones
 
-- Two role-playing date keys, and time-of-day keys when needed, per event: universal time and local time, so both roll up without conversion at query time.
+- Two timestamp columns per event, universal time and local time, so both roll up without conversion at query time.
 
 ## Value bands at query time
 
@@ -36,19 +36,17 @@ Source: the [Kimball techniques](https://www.kimballgroup.com/data-warehouse-bus
 
 ## Fact table variants
 
-- A fact surrogate key is a sequential integer with no dimension behind it, which identifies a row without its dimension keys, lets an interrupted load resume or back out, and turns an update into an insert and a delete.
+- A fact surrogate key is a hash of the columns that identify the event, such as the order number and line number, with no dimension behind it, which identifies a row without its dimension keys and gives an incremental load a key to merge on.
 - A fact row with an effective date, an expiration date and a current flag fits a slowly changing balance, where a periodic snapshot would write identical rows each period, and little else.
-- A measure-type dimension collapses a row to one generic fact and a measure key; it pays off only when hundreds of facts are possible and a row carries a handful, because it multiplies the row count by the occupied columns.
+- Hundreds of sparse measures stay one column each on a wide fact table, because columnar storage keeps an empty column at almost no cost.
 
 ## Load metadata on a fact row
 
 - An audit dimension is keyed from every fact row and carries the run's data-quality indicators, code version and run timestamp, so a query drills to the rows a given run produced.
-- In dbt, `invocation_id` and `run_started_at` identify the run.
 
 ## Real-time fact table
 
-- A hot partition pinned in memory without aggregates or indexes, or deferred updates that let running queries finish first.
-- The near-real-time patterns for dbt (microbatch, streams, dynamic tables, lambda views) are in `dbt-style`'s `incremental.md`.
+- Load micro-batches or a stream into the same fact table, because a modern warehouse queries freshly loaded rows without a separate hot partition.
 
 ## Data-quality schema
 

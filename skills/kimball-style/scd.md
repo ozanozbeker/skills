@@ -6,10 +6,9 @@ Source: the [Kimball techniques](https://www.kimballgroup.com/data-warehouse-bus
 ## Type 2
 
 - Three columns at minimum: a row effective date, a row expiration date and a current row indicator, as timestamps when a member can change twice in a day.
-- The current row's expiration is null (what a dbt snapshot writes to `dbt_valid_to`) or a far-future date; the project picks one and keeps it, because a `between` on the two reads differently.
+- The current row's expiration is null or a far-future date; the project picks one and keeps it, because a `between` on the two reads differently.
 - A change inserts a row with a new surrogate key and the same durable key, and expires the previous row at the change time.
 - A fact posted after the change carries the new key; a fact for an event before the change carries the key effective then (late arriving rows, below).
-- The snapshot section of `dbt-style`'s `incremental.md` holds the strategy choice and the tests for the rows.
 
 ## Type 3
 
@@ -30,9 +29,9 @@ Source: the [Kimball techniques](https://www.kimballgroup.com/data-warehouse-bus
 
 ## Type 6
 
-- A Type 2 dimension plus a `current_<attribute>` column per tracked attribute.
-- A change inserts the new Type 2 row, then overwrites `current_<attribute>` on every row with the same durable key, so the historical row carries both the value at the time and the value now.
-- A query groups by the Type 2 attribute for as-was and by the current attribute for as-is, in one pass.
+- A Type 2 dimension, read with the current value of each tracked attribute beside the historical one.
+- Derive the current value at query time, with `first_value(<attribute>) over (partition by <durable key> order by <effective date> desc)` or a join to the Type 7 current-rows view, instead of storing a `current_<attribute>` column, because a stored copy forces a rewrite of every row of the durable key on each change.
+- A query groups by the Type 2 attribute for as-was and by the derived current attribute for as-is, in one pass.
 
 ## Type 7
 

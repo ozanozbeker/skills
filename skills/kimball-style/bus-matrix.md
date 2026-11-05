@@ -15,15 +15,13 @@ Source: the [Kimball techniques](https://www.kimballgroup.com/data-warehouse-bus
 
 ## Conforming across processes
 
-- A conformed dimension is one table, loaded once and used by every fact table in its column, with the same names and the same values, so drill-across row headers align.
-- A shrunken rollup dimension is built from the base conformed dimension, never from the source again, so the values match.
+- A shrunken rollup dimension is a subset of a conformed dimension's rows or columns (brand from product, region from store), built from the base dimension, never from the source again, so the values match.
   It serves aggregate fact tables and a process captured at the higher grain (a forecast by month and brand).
   A same-grain subset of rows (the stores of one region) is conformed the same way.
 
 ## Drilling across
 
 - Two fact tables are compared by one query per table, each grouped by identical conformed attributes, merged on those row headers; BI tools call it stitch or multipass.
-- In SQL, aggregate each fact table to the shared grain in its own CTE, then full outer join the aggregates on the conformed keys, because joining the atomic tables first multiplies rows.
+- In SQL, aggregate each fact table to the shared grain in its own CTE, then full outer join the aggregates on the conformed keys.
 - A consolidated fact table is that query written into the load: build one when the comparison runs constantly, because it adds load work and removes the drill-across from every report.
-- An aggregate fact table is keyed to shrunken dimensions, summed from the atomic table, and published at the same time as the atomic table, so aggregate navigation in the BI layer picks it and every tool gains the same speed.
-  An OLAP cube is an aggregate that users query directly.
+- An aggregate fact table is published at the same time as the atomic table it sums.

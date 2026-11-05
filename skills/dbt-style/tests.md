@@ -1,7 +1,7 @@
 # Custom generic tests
 
 Source: [writing custom generic data tests](https://docs.getdbt.com/best-practices/writing-custom-generic-tests).
-`dbt:using-dbt-for-analytics-engineering` decides which tests a model gets; `dbt:adding-dbt-unit-test` owns unit tests.
+When the dbt Labs agent skills are installed, `using-dbt-for-analytics-engineering` decides which tests a model gets, and `adding-dbt-unit-test` owns unit tests.
 This file is the mechanics of a generic test.
 
 - Check `dbt_utils` and `dbt_expectations` first, because the test usually exists.
@@ -21,9 +21,9 @@ This file is the mechanics of a generic test.
 
 - The first argument is always `model`, even when the resource is a source, seed or snapshot.
   Include `column_name` only for a column-level test.
-- Extra arguments go in the signature, `{% test relationships(model, column_name, field, to) %}`, and in YAML under `arguments:` (dbt 1.10.5 and later; earlier versions take them as top-level keys).
+- Extra arguments go in the signature, `{% test relationships(model, column_name, field, to) %}`, and in YAML under `arguments:`.
   `model` and `column_name` come from context and never appear in YAML.
 - A `{{ config(severity = 'warn') }}` inside the test block sets a default for every instance; an instance overrides it in its own config.
 - A test block named after a built-in, `{% test unique(model, column_name) %}`, overrides dbt's implementation.
 - Document it under `macros:` in `tests/generic/schema.yml` as `test_<name>`, with an `arguments:` list giving `name`, `type` and `description` per argument.
-- Call it under `data_tests:` on a model, source, snapshot or seed; an instance may carry its own `description:` (dbt 1.9 and later).
+- Call it under `data_tests:` on a model, source, snapshot or seed; an instance may carry its own `description:`.

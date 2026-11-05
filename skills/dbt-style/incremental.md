@@ -29,7 +29,7 @@ Sources: [incremental models in depth](https://docs.getdbt.com/best-practices/ma
   dbt writes the `where event_ts between ...` predicate per batch, so the model has no `is_incremental()` block.
 - Set `event_time` on every upstream model too, because without it each batch scans the full upstream table instead of pushing the time filter up.
 - Each run is many small batch queries, so a failed backfill retries one batch.
-- Needs dbt 1.9 or later; Microsoft Fabric lacks it.
+- Microsoft Fabric lacks it.
 
 ## Snapshots
 

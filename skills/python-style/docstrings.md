@@ -112,6 +112,5 @@ def read_config(path: Path, *, strict: bool = True) -> Config:
 One call that shows the return value is enough.
 The code goes in a plain fenced block tagged `python`, which ruff's `docstring-code-format` formats, with no output comment: a written output goes stale, and a docs build that runs the block prints the real value.
 
-Keep the example runnable for any user who has the package installed.
-Import example data the package ships, as dplyr's examples use `starwars`, or define what the snippet references.
+Define what the snippet references, or import data the package ships, as dplyr's examples use `starwars`.
 A demo or test module is not importable from an example.
